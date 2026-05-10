@@ -156,7 +156,7 @@ static void list_patients(sqlite3 *db) {
         int total_pages;
 
         if (rc != SQLITE_OK) {
-            utils_print_error("Greska pri dohvat-u pacijenata.");
+            utils_print_error("Greska pri dohvatu pacijenata.");
             return;
         }
 
