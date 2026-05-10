@@ -152,6 +152,7 @@ static void list_patients(sqlite3 *db) {
         Patient *patients = NULL;
         int count = 0;
         int total = 0;
+        int i;
         int rc = db_query_patients(db, search_term, search_type, sort_type, page, page_size, &patients, &count, &total);
         int total_pages;
 
@@ -168,7 +169,7 @@ static void list_patients(sqlite3 *db) {
 
         total_pages = (total + page_size - 1) / page_size;
         printf("\n--- Stranica %d/%d (ukupno %d) ---\n", page, total_pages, total);
-        for (int i = 0; i < count; i++) {
+        for (i = 0; i < count; i++) {
             print_patient(&patients[i]);
         }
         db_free_patients(patients);
@@ -402,6 +403,7 @@ static void show_statistics(sqlite3 *db) {
     ScreeningStats *stats = NULL;
     int count = 0;
     int total_patients = 0;
+    int i;
     int rc = db_get_statistics(db, &stats, &count, &total_patients);
 
     if (rc != SQLITE_OK) {
@@ -417,7 +419,7 @@ static void show_statistics(sqlite3 *db) {
     }
 
     printf("%-25s %-12s %-12s\n", "Tip screeninga", "Broj", "Prosjek rizika");
-    for (int i = 0; i < count; i++) {
+    for (i = 0; i < count; i++) {
         printf("%-25s %-12d %-12.2f\n", stats[i].screening_type, stats[i].patient_count, stats[i].avg_risk);
     }
     db_free_stats(stats);

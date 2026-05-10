@@ -93,7 +93,7 @@ int utils_confirm(const char *prompt) {
         if (strcmp(input, "ne") == 0 || strcmp(input, "NE") == 0 || strcmp(input, "n") == 0 || strcmp(input, "N") == 0) {
             return 0;
         }
-        utils_print_error("Neispravan unos. Upisite 'da' ili 'ne'.");
+        utils_print_error("Neispravan unos. Upišite 'da' ili 'ne'.");
     }
     return 0;
 }
