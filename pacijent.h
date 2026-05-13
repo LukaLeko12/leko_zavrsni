@@ -1,4 +1,4 @@
-#ifndef PACIJENT_H
+﻿#ifndef PACIJENT_H
 #define PACIJENT_H
 
 #include <stdio.h>
@@ -9,10 +9,10 @@
 #include <windows.h>
 #endif
 
-// --- KONSTANTE ---
+// KONSTANTE
 #define INITIAL_CAPACITY 20
 
-// --- ENUM ZA IZBORNIK ---
+// ENUM ZA IZBORNIK
 typedef enum {
     MELANOM = 1,
     PLUCA = 2,
@@ -22,7 +22,7 @@ typedef enum {
     IZLAZ = 0
 } MenuOpcije;
 
-// --- STRUKTURA ZA PACIJENTA ---
+// STRUKTURA ZA PACIJENTA
 typedef struct {
     char ime[50];
     char prezime[50];
@@ -32,14 +32,14 @@ typedef struct {
     char dijagnoza[100];
 } Pacijent;
 
-// --- DINAMIČKA LISTA PACIJENATA ---
+// DINAMIČKA LISTA PACIJENATA 
 typedef struct {
     Pacijent* pacijenti;
     int count;
     int capacity;
 } PacijentList;
 
-// --- MAKRO FUNKCIJE ---
+// MAKRO FUNKCIJE
 #define PROVJERA_MEMORIJE(ptr) \
     do { \
         if ((ptr) == NULL) { \
@@ -49,31 +49,31 @@ typedef struct {
         } \
     } while(0)
 
-// --- GLOBALNA LISTA ---
+// GLOBALNA LISTA
 extern PacijentList lista_pacijenata;
 
-// --- FUNKCIJE ZA UPRAVLJANJE LISTOM (lista.c) ---
+// FUNKCIJE ZA UPRAVLJANJE LISTOM lista.c 
 int inicijalizuj_listu(PacijentList* lista);
 int prosliri_listu(PacijentList* lista);
 int dodaj_pacijenta_u_listu(PacijentList* lista, const Pacijent* pacijent);
 void oslobodi_listu(PacijentList* lista);
 
-// --- FUNKCIJE ZA DATOTEKE (datoteke.c) ---
+// FUNKCIJE ZA DATOTEKE datoteke.c
 void spremi_u_datoteku(const Pacijent* p);
 int ucitaj_pacijente_iz_datoteke(PacijentList* lista);
 
-// --- POMOĆNE FUNKCIJE (ui.c) ---
+// POMOĆNE FUNKCIJE ui.c
 void ocisti_ekran(void);
 int unos_broja(const char* pitanje);
 char unos_dn(const char* pitanje);
 void unos_string(char* buffer, int max_size, const char* prompt);
 
-// --- MODULI PREGLEDA (pacijent.c) ---
+// MODULI PREGLEDA pacijent.c
 void procjena_melanoma(void);
 void procjena_pluca(void);
 void procjena_prostate(void);
 
-// --- PRIKAZI PODATKE (ui.c) ---
+// PRIKAZI PODATKE ui.c
 void prikazi_sve_pacijente(void);
 void prikazi_statistiku(void);
 void prikazi_meni(void);

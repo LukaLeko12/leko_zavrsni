@@ -1,7 +1,7 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include "pacijent.h"
 
-// --- INICIJALIZACIJA LISTE ---
+// INICIJALIZACIJA LISTE
 int inicijalizuj_listu(PacijentList* lista) {
     if (lista == NULL) return 0;
 
@@ -13,7 +13,7 @@ int inicijalizuj_listu(PacijentList* lista) {
     return 1;
 }
 
-// --- PROŠIRENJE LISTE ---
+// PROŠIRENJE LISTE
 int prosliri_listu(PacijentList* lista) {
     if (lista == NULL) return 0;
 
@@ -28,7 +28,7 @@ int prosliri_listu(PacijentList* lista) {
     return 1;
 }
 
-// --- DODAJ PACIJENTA U LISTU ---
+// DODAJ PACIJENTA U LISTU
 int dodaj_pacijenta_u_listu(PacijentList* lista, const Pacijent* pacijent) {
     if (lista == NULL || pacijent == NULL) return 0;
 
@@ -42,15 +42,15 @@ int dodaj_pacijenta_u_listu(PacijentList* lista, const Pacijent* pacijent) {
     return 1;
 }
 
-// --- OSLOBAĐANJE MEMORIJE ---
+// OSLOBAĐANJE MEMORIJE
 void oslobodi_listu(PacijentList* lista) {
     if (lista == NULL) return;
 
     if (lista->pacijenti != NULL) {
-        free(lista->pacijenti);
+        free(lista->pacijenti); 
         lista->pacijenti = NULL;
     }
 
-    lista->count = 0;
+    lista->count = 0; 
     lista->capacity = 0;
 }

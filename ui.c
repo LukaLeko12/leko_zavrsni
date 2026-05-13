@@ -1,10 +1,10 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #pragma warning(disable : 6031)
 #include "pacijent.h"
 
 extern PacijentList lista_pacijenata;
 
-// --- OČISTI EKRAN ---
+// OČISTI EKRAN
 void ocisti_ekran(void) {
 #ifdef _WIN32
     system("cls");
@@ -13,7 +13,7 @@ void ocisti_ekran(void) {
 #endif
 }
 
-// --- UNOS BROJA ---
+// UNOS BROJA
 int unos_broja(const char* pitanje) {
     int broj;
     printf("%s", pitanje);
@@ -22,7 +22,7 @@ int unos_broja(const char* pitanje) {
     return broj;
 }
 
-// --- UNOS DA/NE ---
+// UNOS DA/NE
 char unos_dn(const char* pitanje) {
     char izbor;
     printf("%s", pitanje);
@@ -31,7 +31,7 @@ char unos_dn(const char* pitanje) {
     return izbor;
 }
 
-// --- UNOS STRING-A ---
+// UNOS STRING-A
 void unos_string(char* buffer, int max_size, const char* prompt) {
     if (buffer == NULL) return;
     printf("%s", prompt);
@@ -43,10 +43,10 @@ void unos_string(char* buffer, int max_size, const char* prompt) {
     }
 }
 
-// --- PRIKAZI SVE PACIJENTE ---
+// PRIKAZI SVE PACIJENTE
 void prikazi_sve_pacijente(void) {
     ocisti_ekran();
-    printf("=== PRIKAZ SVIH PACIJENATA ===\n\n");
+    printf("---- PRIKAZ SVIH PACIJENATA ----\n\n");
     printf("%-15s %-15s %-8s %-12s %-10s %-20s\n",
         "IME", "PREZIME", "GODINE", "TIP", "RIZIK", "DIJAGNOZA");
     printf("--------------------------------------------------------------------------\n");
@@ -71,7 +71,7 @@ void prikazi_sve_pacijente(void) {
         lista_pacijenata.count, lista_pacijenata.capacity);
 }
 
-// --- STATISTIKA ---
+// STATISTIKA - PACIJENATA
 void prikazi_statistiku(void) {
     if (lista_pacijenata.count == 0) {
         ocisti_ekran();
@@ -94,7 +94,7 @@ void prikazi_statistiku(void) {
     }
 
     ocisti_ekran();
-    printf("\n========== STATISTIKA ==========\n\n");
+    printf("\n---------- STATISTIKA - PACIJENATA ----------\n\n");
     printf("Ukupno pacijenata: %d\n\n", lista_pacijenata.count);
     printf("Raspodjela po riziku:\n");
     printf("  - Visok rizik (>=75%%):    %d pacijenata (%.1f%%)\n",
@@ -104,10 +104,10 @@ void prikazi_statistiku(void) {
     printf("  - Nizak rizik (<40%%):     %d pacijenata (%.1f%%)\n",
         lista_pacijenata.count - visok_rizik - srednji_rizik,
         (float)(lista_pacijenata.count - visok_rizik - srednji_rizik) / lista_pacijenata.count * 100);
-    printf("\nProsjekurni rizik: %.2f%%\n", prosjecan_rizik / lista_pacijenata.count);
+    printf("\nProsjecan rizik: %.2f%%\n", prosjecan_rizik / lista_pacijenata.count);
 }
 
-// --- PRIKAZI MENI ---
+// MENI
 void prikazi_meni(void) {
     printf("\n-----------------------------------------------------\n");
     printf("     SUSTAV ZA PROCJENU ONKOLOSKIH BOLESTI\n");
@@ -116,7 +116,7 @@ void prikazi_meni(void) {
     printf(" [2] Dodaj - Pluca\n");
     printf(" [3] Dodaj - Prostata\n");
     printf(" [4] Prikazi sve pacijente\n");
-    printf(" [5] Statistika\n");
+    printf(" [5] Statistika - pacijenata\n");
     printf(" [0] Izlaz\n");
     printf("-----------------------------------------------------\n");
 }

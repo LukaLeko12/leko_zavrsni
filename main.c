@@ -1,8 +1,8 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #pragma warning(disable : 6031)
 #include "pacijent.h"
 
-// --- GLOBALNA LISTA ---
+// GLOBALNA LISTA
 PacijentList lista_pacijenata = { NULL, 0, 0 };
 
 int main(void) {
@@ -25,36 +25,36 @@ int main(void) {
         switch ((MenuOpcije)izbor) {
         case MELANOM:
             procjena_melanoma();
-            printf("\nEnter za nastavak...");
+            printf("\nPritisnite enter kako bi ste nastavili...");
             getchar();
             break;
         case PLUCA:
             procjena_pluca();
-            printf("\nEnter za nastavak...");
+            printf("\nPritisnite enter kako bi ste nastavili...");
             getchar();
             break;
         case PROSTATA:
             procjena_prostate();
-            printf("\nEnter za nastavak...");
+            printf("\nPritisnite enter kako bi ste nastavili...");
             getchar();
             break;
         case PRIKAZI:
             prikazi_sve_pacijente();
-            printf("\nEnter za nastavak...");
+            printf("\nPritisnite enter kako bi ste nastavili...");
             getchar();
             break;
         case STATISTIKA:
             prikazi_statistiku();
-            printf("\nEnter za nastavak...");
+            printf("\nPritisnite enter kako bi ste nastavili...");
             getchar();
             break;
         case IZLAZ:
-            printf("\nDovidenja!\n");
+            printf("\nUgodan dan, Dovidenja!\n");
             oslobodi_listu(&lista_pacijenata);
             return EXIT_SUCCESS;
         default:
             printf("Nepoznata opcija!\n");
-            printf("Enter za nastavak...");
+            printf("Pritisnite enter kako bi ste nastavili...");
             getchar();
         }
 
@@ -62,4 +62,6 @@ int main(void) {
 
     oslobodi_listu(&lista_pacijenata);
     return EXIT_SUCCESS;
+
+    
 }

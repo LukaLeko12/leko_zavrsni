@@ -1,10 +1,10 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include "pacijent.h"
 
 extern PacijentList lista_pacijenata;
 extern int dodaj_pacijenta_u_listu(PacijentList* lista, const Pacijent* pacijent);
 
-// --- SPREMI U DATOTEKU ---
+// SPREMI U DATOTEKU
 void spremi_u_datoteku(const Pacijent* p) {
     if (p == NULL) return;
 
@@ -21,7 +21,7 @@ void spremi_u_datoteku(const Pacijent* p) {
     fclose(fp);
 }
 
-// --- UČITAJ PACIJENTE IZ DATOTEKE ---
+// UČITAJ PACIJENTE IZ DATOTEKE
 int ucitaj_pacijente_iz_datoteke(PacijentList* lista) {
     if (lista == NULL) return 0;
 

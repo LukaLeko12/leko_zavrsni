@@ -11,23 +11,23 @@ extern int unos_broja(const char* pitanje);
 extern char unos_dn(const char* pitanje);
 extern int dodaj_pacijenta_u_listu(PacijentList* lista, const Pacijent* pacijent);
 
-// --- ANALIZA MELANOMA ---
+// ANALIZA MELANOMA
 void procjena_melanoma(void) {
     Pacijent p;
     int b = 0;
 
     ocisti_ekran();
-    printf(">>> ANALIZA MELANOMA <<<\n\n");
+    printf(">>> ANALIZA OBLIKA MELANOMA <<<\n\n");
 
     unos_string(p.ime, sizeof(p.ime), "Ime: ");
     unos_string(p.prezime, sizeof(p.prezime), "Prezime: ");
-    p.godine = unos_broja("godine: ");
+    p.godine = unos_broja("Godine: ");
     strcpy(p.tip_pregleda, "Melanom");
 
-    printf("\n--- MELANOM (ABCD KRITERIJ) ---\n");
+    printf("\n---- MELANOM (ABCD KRITERIJ) ----\n");
     if (unos_dn("Asimetrija? (da/ne): ") == 'd') b += 25;
     if (unos_dn("Rubovi? (da/ne): ") == 'd') b += 25;
-    if (unos_dn("Boja? (da/ne): ") == 'd') b += 25;
+    if (unos_dn("Boja na kozi? (da/ne): ") == 'd') b += 25;
     if (unos_dn("Promjer > 6mm? (da/ne): ") == 'd') b += 25;
 
     p.rizik_postotak = (float)b;
@@ -46,7 +46,7 @@ void procjena_melanoma(void) {
     }
 }
 
-// --- ANALIZA PLUCA ---
+// ANALIZA PLUCA
 void procjena_pluca(void) {
     Pacijent p;
     int b = 0;
@@ -56,10 +56,10 @@ void procjena_pluca(void) {
 
     unos_string(p.ime, sizeof(p.ime), "Ime: ");
     unos_string(p.prezime, sizeof(p.prezime), "Prezime: ");
-    p.godine = unos_broja("godine: ");
+    p.godine = unos_broja("Godine: ");
     strcpy(p.tip_pregleda, "Pluca");
 
-    printf("\n--- RIZIK FAKTORI ---\n");
+    printf("\n---- RIZIK FAKTORI ----\n");
     if (unos_dn("Pusac? (da/ne): ") == 'd') b += 40;
     if (unos_dn("Kasalj? (da/ne): ") == 'd') b += 40;
     if (unos_dn("Bol u prsima? (da/ne): ") == 'd') b += 20;
@@ -80,7 +80,7 @@ void procjena_pluca(void) {
     }
 }
 
-// --- ANALIZA PROSTATE ---
+// ANALIZA PROSTATE
 void procjena_prostate(void) {
     Pacijent p;
     int b = 0;
@@ -90,11 +90,11 @@ void procjena_prostate(void) {
 
     unos_string(p.ime, sizeof(p.ime), "Ime: ");
     unos_string(p.prezime, sizeof(p.prezime), "Prezime: ");
-    p.godine = unos_broja("godine: ");
+    p.godine = unos_broja("Godine: ");
     strcpy(p.tip_pregleda, "Prostata");
 
-    printf("\n--- SIMPTOMI ---\n");
-    if (unos_dn("Probleme s mokrenjem? (da/ne): ") == 'd') b += 50;
+    printf("\n---- SIMPTOMI ----\n");
+    if (unos_dn("Problemi s mokrenjem? (da/ne): ") == 'd') b += 50;
     if (unos_dn("Bolovi? (da/ne): ") == 'd') b += 50;
 
     p.rizik_postotak = (float)b;
