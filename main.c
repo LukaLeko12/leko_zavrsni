@@ -1,22 +1,30 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+// main.c -- GLAVNA DATOTEKA
+#define _CRT_SECURE_NO_WARNINGS
 #pragma warning(disable : 6031)
 #include "pacijent.h"
 
-// GLOBALNA LISTA
-PacijentList lista_pacijenata = { NULL, 0, 0 };
+// ✅ SAMO OVDJE DEFINIRAJ GLOBALNE VARIJABLE! (6,8: static, extern - DEFINICIJA)
+PacijentList lista_pacijenata = { NULL, 0, 0 };                    // (6,8: SAMO OVDJE!)
+DvostrukaPovezanaLista dvostuka_lista = { NULL, NULL, 0 };         // (6,8: SAMO OVDJE!)
 
 int main(void) {
     int izbor;
 
-    // Inicijalizacija liste
+    // --- INICIJALIZACIJA --- (16,17: dinamička memorija)
     if (!inicijalizuj_listu(&lista_pacijenata)) {
-        fprintf(stderr, "[!] Inicijalizacija neuspjesna!\n");
+        fprintf(stderr, "[!] Inicijalizacija liste neuspjesna!\n");
         return EXIT_FAILURE;
     }
 
-    // Učitaj podatke iz datoteke ako postoji
+    if (!inicijalizuj_povezanu_listu(&dvostuka_lista)) {
+        fprintf(stderr, "[!] Inicijalizacija povezane liste neuspjesna!\n");
+        return EXIT_FAILURE;
+    }
+
+    // --- UČITAVANJE IZ DATOTEKE --- (1: READ)
     ucitaj_pacijente_iz_datoteke(&lista_pacijenata);
 
+    // --- MAIN LOOP --- (10,11: izbornik, enum)
     do {
         ocisti_ekran();
         prikazi_meni();
@@ -25,43 +33,53 @@ int main(void) {
         switch ((MenuOpcije)izbor) {
         case MELANOM:
             procjena_melanoma();
-            printf("\nPritisnite enter kako bi ste nastavili...");
+            printf("\nPritisnite enter za nastavak...");
             getchar();
             break;
         case PLUCA:
             procjena_pluca();
-            printf("\nPritisnite enter kako bi ste nastavili...");
+            printf("\nPritisnite enter za nastavak...");
             getchar();
             break;
         case PROSTATA:
             procjena_prostate();
-            printf("\nPritisnite enter kako bi ste nastavili...");
+            printf("\nPritisnite enter za nastavak...");
             getchar();
             break;
         case PRIKAZI:
-            prikazi_sve_pacijente();
-            printf("\nPritisnite enter kako bi ste nastavili...");
+            prikazi_pacijente_funkcija();
+            printf("\nPritisnite enter za nastavak...");
             getchar();
             break;
         case STATISTIKA:
             prikazi_statistiku();
-            printf("\nPritisnite enter kako bi ste nastavili...");
+            printf("\nPritisnite enter za nastavak...");
+            getchar();
+            break;
+        case SORTIRAJ_RIZIK:
+            sortiraj_pacijente_po_riziku();
+            printf("\nPritisnite enter za nastavak...");
+            getchar();
+            break;
+        case PRETRAGA_RIZIK:
+            pretraga_rizik();
+            printf("\nPritisnite enter za nastavak...");
             getchar();
             break;
         case IZLAZ:
             printf("\nUgodan dan, Dovidenja!\n");
-            oslobodi_listu(&lista_pacijenata);
+            oslobodi_listu(&lista_pacijenata);                // (18: oslobađanje)
+            oslobodi_povezanu_listu(&dvostuka_lista);
             return EXIT_SUCCESS;
         default:
             printf("Nepoznata opcija!\n");
-            printf("Pritisnite enter kako bi ste nastavili...");
+            printf("\nPritisnite enter za nastavak...");
             getchar();
         }
 
     } while (1);
 
     oslobodi_listu(&lista_pacijenata);
+    oslobodi_povezanu_listu(&dvostuka_lista);
     return EXIT_SUCCESS;
-
-    
 }
