@@ -1,16 +1,15 @@
-// main.c -- GLAVNA DATOTEKA
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #pragma warning(disable : 6031)
 #include "pacijent.h"
 
-// ✅ SAMO OVDJE DEFINIRAJ GLOBALNE VARIJABLE! (6,8: static, extern - DEFINICIJA)
-PacijentList lista_pacijenata = { NULL, 0, 0 };                    // (6,8: SAMO OVDJE!)
-DvostrukaPovezanaLista dvostuka_lista = { NULL, NULL, 0 };         // (6,8: SAMO OVDJE!)
+// (6,8 static, extern)
+PacijentList lista_pacijenata = { NULL, 0, 0 };                    // (6,8)
+DvostrukaPovezanaLista dvostuka_lista = { NULL, NULL, 0 };         // (6,8)
 
 int main(void) {
     int izbor;
 
-    // --- INICIJALIZACIJA --- (16,17: dinamička memorija)
+    // ---- INICIJALIZACIJA ---- (16,17 dinamička memorija)
     if (!inicijalizuj_listu(&lista_pacijenata)) {
         fprintf(stderr, "[!] Inicijalizacija liste neuspjesna!\n");
         return EXIT_FAILURE;
@@ -21,10 +20,10 @@ int main(void) {
         return EXIT_FAILURE;
     }
 
-    // --- UČITAVANJE IZ DATOTEKE --- (1: READ)
+    // ---- UČITAVANJE IZ DATOTEKE ---- (1 READ)
     ucitaj_pacijente_iz_datoteke(&lista_pacijenata);
 
-    // --- MAIN LOOP --- (10,11: izbornik, enum)
+    // ---- MAIN LOOP ---- (10,11 izbornik, enum)
     do {
         ocisti_ekran();
         prikazi_meni();
@@ -68,7 +67,7 @@ int main(void) {
             break;
         case IZLAZ:
             printf("\nUgodan dan, Dovidenja!\n");
-            oslobodi_listu(&lista_pacijenata);                // (18: oslobađanje)
+            oslobodi_listu(&lista_pacijenata);                // (18 oslobađanje memorije)
             oslobodi_povezanu_listu(&dvostuka_lista);
             return EXIT_SUCCESS;
         default:

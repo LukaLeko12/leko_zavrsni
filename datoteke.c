@@ -1,15 +1,14 @@
-// datoteke.c -- UPRAVLJANJE DATOTEKAMA
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include "pacijent.h"
 
-// --- SPREMI U DATOTEKU --- (1: CREATE - datoteka, 19: fopen/fclose)
+// ---- SPREMI U DATOTEKU ---- (1 CREATE datoteka, 19 fopen/fclose)
 void spremi_u_datoteku(const Pacijent* p) {
-    if (p == NULL) return; // (14: zaštita)
+    if (p == NULL) return; // (14 zaštita)
 
-    FILE* fp = fopen("kartoni.txt", "a"); // (19: fopen)
-    if (fp == NULL) { // (19: provjera)
+    FILE* fp = fopen("kartoni.txt", "a"); // (19 fopen)
+    if (fp == NULL) { // (19 provjera)
         printf(" [!] Greska pri otvaranju datoteke!\n");
-        perror("fopen"); // (22: perror)
+        perror("fopen"); // (22 perror)
         return;
     }
 
@@ -17,15 +16,15 @@ void spremi_u_datoteku(const Pacijent* p) {
         p->ime, p->prezime, p->godine, p->tip_pregleda,
         p->rizik_postotak, p->dijagnoza);
 
-    fclose(fp); // (19: fclose)
+    fclose(fp); // (19 fclose)
 }
 
-// --- ČITAJ PACIJENTE IZ DATOTEKE --- (1: READ - datoteka, 19: fopen/fclose)
+// ---- ČITAJ PACIJENTE IZ DATOTEKE ---- (1 READ - datoteka, 19 fopen/fclose)
 int ucitaj_pacijente_iz_datoteke(PacijentList* lista) {
     if (lista == NULL) return 0; // (14)
 
-    FILE* fp = fopen("kartoni.txt", "r"); // (19: fopen)
-    if (fp == NULL) { // (19: provjera)
+    FILE* fp = fopen("kartoni.txt", "r"); // (19 fopen)
+    if (fp == NULL) { // (19 provjera)
         printf(" Datoteka ne postoji ili je prazna.\n");
         return 1;
     }
@@ -47,6 +46,6 @@ int ucitaj_pacijente_iz_datoteke(PacijentList* lista) {
         dodaj_u_povezanu_listu(&dvostuka_lista, &temp_pacijent);
     }
 
-    fclose(fp); // (19: fclose)
+    fclose(fp); // (19 fclose)
     return 1;
 }

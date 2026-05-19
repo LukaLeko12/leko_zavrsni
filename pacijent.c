@@ -1,13 +1,10 @@
-// pacijent.c -- MODULI ZA UNOS PACIJENATA
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #pragma warning(disable : 6031)
 #include "pacijent.h"
 
-// ✅ VISE NEMA GLOBALNIH VARIJABLI OVDJE!
+// ---- MODULI PREGLEDA ---- (13 strukture i funkcije)
 
-// --- MODULI PREGLEDA --- (13: strukture i funkcije)
-
-// MELANOM - (1: CREATE)
+// MELANOM - (1 CREATE)
 void procjena_melanoma(void) {
     Pacijent p;
     int b = 0;

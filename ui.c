@@ -1,9 +1,8 @@
-// ui.c -- KORISNIČKI UI
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #pragma warning(disable : 6031)
 #include "pacijent.h"
 
-// --- ČISTI EKRAN --- (7: organizacija)
+// ---- ČISTI EKRAN ---- (7 organizacija)
 void ocisti_ekran(void) {
 #ifdef _WIN32
     system("cls");
@@ -12,7 +11,7 @@ void ocisti_ekran(void) {
 #endif
 }
 
-// --- UNOS BROJA --- (12,14: pokazivači, zaštita)
+// ---- UNOS BROJA ---- (12,14 pokazivači, zaštita)
 int unos_broja(const char* pitanje) {
     int broj;
     printf("%s", pitanje);
@@ -24,7 +23,7 @@ int unos_broja(const char* pitanje) {
     return broj;
 }
 
-// --- UNOS DA/NE --- (12,14)
+// ---- UNOS DA/NE ---- (12,14)
 char unos_dn(const char* pitanje) {
     char izbor;
     printf("%s", pitanje);
@@ -33,7 +32,7 @@ char unos_dn(const char* pitanje) {
     return izbor;
 }
 
-// --- UNOS STRINGA --- (12,14: pokazivač, zaštita)
+// ---- UNOS STRINGA ---- (12,14 pokazivač, zaštita)
 void unos_string(char* buffer, int max_size, const char* prompt) {
     if (buffer == NULL) return; // (14: zaštita)
     printf("%s", prompt);
@@ -45,7 +44,7 @@ void unos_string(char* buffer, int max_size, const char* prompt) {
     }
 }
 
-// --- PRIKAZI SVE PACIJENTE --- (1: READ)
+// ---- PRIKAZI SVE PACIJENTE ---- (1 READ)
 void prikazi_pacijente_funkcija(void) {
     ocisti_ekran();
     printf("---- PRIKAZ SVIH PACIJENATA ----\n");
@@ -72,7 +71,7 @@ void prikazi_pacijente_funkcija(void) {
     printf("Ukupno: %d pacijenata\n", lista_pacijenata.count);
 }
 
-// --- STATISTIKA --- (1: READ)
+// ---- STATISTIKA ---- (1 READ)
 void prikazi_statistiku(void) {
     if (lista_pacijenata.count == 0) {
         printf(" [!] Nema podataka za statistiku!\n");
@@ -99,7 +98,7 @@ void prikazi_statistiku(void) {
     printf("Prosjecan rizik: %.2f%%\n", prosjecan_rizik / lista_pacijenata.count);
 }
 
-// --- PRETRAGA PO RIZIKU --- (1: READ)
+// ---- PRETRAGA PO RIZIKU ---- (1 READ)
 void pretraga_rizik(void) {
     ocisti_ekran();
     int min_rizik = unos_broja("Unesite minimalni rizik [%]: ");
@@ -136,7 +135,7 @@ void pretraga_rizik(void) {
     }
 }
 
-// --- KOMPARATOR ZA SORTIRANJE --- (23,26: qsort, pokazivač na funkciju)
+// ---- KOMPARATOR ZA SORTIRANJE ---- (23,26 qsort, pokazivač na funkciju)
 static int compare_pacijenti_po_riziku(const void* a, const void* b) {
     const Pacijent* p1 = (const Pacijent*)a;
     const Pacijent* p2 = (const Pacijent*)b;
@@ -146,7 +145,7 @@ static int compare_pacijenti_po_riziku(const void* a, const void* b) {
     return 0;
 }
 
-// --- SORTIRANJE PO RIZIKU --- (23,26: qsort)
+// ---- SORTIRANJE PO RIZIKU ---- (23,26 qsort)
 void sortiraj_pacijente_po_riziku(void) {
     ocisti_ekran();
     printf("---- SORTIRANJE PO RIZIKU ----\n");
@@ -156,7 +155,7 @@ void sortiraj_pacijente_po_riziku(void) {
         return;
     }
 
-    qsort(lista_pacijenata.pacijenti, // (23,26: qsort + pokazivač na funkciju)
+    qsort(lista_pacijenata.pacijenti, // (23,26 qsort i pokazivač na funkciju)
         lista_pacijenata.count,
         sizeof(Pacijent),
         compare_pacijenti_po_riziku);
@@ -177,18 +176,18 @@ void sortiraj_pacijente_po_riziku(void) {
     }
 }
 
-// --- MENI --- (10,11: izbornik, enum)
+// ---- IZBORNIK ---- (10,11 izbornik, enum)
 void prikazi_meni(void) {
     printf("---------------------------------------------------\n");
     printf("     SUSTAV ZA PROCJENU ONKOLOSKIH BOLESTI\n");
     printf("---------------------------------------------------\n");
-    printf(" [1] Melanom - ABCD kriterij\n"
-        " [2] Pluca - Anamneza\n"
-        " [3] Prostata - Simptomi\n"
+    printf(" [1] Melanom\n"
+        " [2] Pluca\n"
+        " [3] Prostata\n"
         " [4] Prikazi sve pacijente\n"
         " [5] Statistika\n"
-        " [6] Sortiraj po riziku (qsort)\n"
+        " [6] Sortiraj po riziku\n"
         " [7] Pretraga po riziku\n"
-        " [0] Izlaz\n");
+        " [0] Izlaz iz sustava\n");
     printf("---------------------------------------------------\n");
 }
