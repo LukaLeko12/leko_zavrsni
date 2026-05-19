@@ -2,10 +2,9 @@
 #pragma warning(disable : 6031)
 #include "pacijent.h"
 
-// (6,8 static, extern)
-PacijentList lista_pacijenata = { NULL, 0, 0 };                    // (6,8)
-DvostrukaPovezanaLista dvostuka_lista = { NULL, NULL, 0 };         // (6,8)
-
+// 
+PacijentList lista_pacijenata = { NULL, 0, 0 };                    
+DvostrukaPovezanaLista dvostuka_lista = { NULL, NULL, 0 };        
 int main(void) {
     int izbor;
 

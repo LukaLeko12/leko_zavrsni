@@ -2,7 +2,7 @@
 #pragma warning(disable : 6031)
 #include "pacijent.h"
 
-// ---- MODULI PREGLEDA ---- (13 strukture i funkcije)
+// ---- MODULI PREGLEDA PACIJENATA---- (13 strukture i funkcije)
 
 // MELANOM - (1 CREATE)
 void procjena_melanoma(void) {
@@ -10,7 +10,7 @@ void procjena_melanoma(void) {
     int b = 0;
     ocisti_ekran();
     strcpy(p.tip_pregleda, "Melanom");
-    printf(">>> ANALIZA MELANOMA PO KRITERIJU <<<\n\n");
+    printf(">>> ANALIZA MELANOMA <<<\n\n");
     unos_string(p.ime, sizeof(p.ime), "Ime: ");
     unos_string(p.prezime, sizeof(p.prezime), "Prezime: ");
     p.godine = unos_broja("godine: ");
@@ -18,7 +18,7 @@ void procjena_melanoma(void) {
     if (unos_dn("- Asimetrija? (da/ne): ") == 'd') b += 25;
     if (unos_dn("- Rubovi? (da/ne): ") == 'd') b += 25;
     if (unos_dn("- Boja? (da/ne): ") == 'd') b += 25;
-    if (unos_dn("- Promjer > 6mm? (da/ne): ") == 'd') b += 25;
+    if (unos_dn("- Promjer veci od 6mm? (da/ne): ") == 'd') b += 25;
 
     p.rizik_postotak = (float)b;
     if (b >= 75) strcpy(p.dijagnoza, "VISOK RIZIK");
