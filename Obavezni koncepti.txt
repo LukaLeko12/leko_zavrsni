@@ -1,0 +1,1324 @@
+1. MINIMUM KOJI STUDENTI MORAJU IMATI JE IMPLEMENTIRANI CRUID
+   Create-Read-Update-Insert-Delete
+  
+   Primjer koda:
+
+// --- CREATE ---
+// Datoteka: pacijent.c
+void procjena_melanoma(void) {
+    Pacijent p;
+    unos_string(p.ime, sizeof(p.ime), "Ime: ");
+    unos_string(p.prezime, sizeof(p.prezime), "Prezime: ");
+    p.godine = unos_broja("godine: ");
+    
+    // ... izračun rizika ...
+    
+    spremi_u_datoteku_binarno(&p);    // CREATE u binarnu datoteku
+    spremi_u_datoteku_tekstualno(&p); // CREATE u tekstualnu datoteku
+    dodaj_pacijenta_u_listu(&lista_pacijenata, &p);  // INSERT u memoriju
+}
+
+// --- READ ---
+// Datoteka: datoteke.c
+int ucitaj_pacijente_iz_datoteke_binarno(PacijentList *lista) {
+    FILE *fp = fopen(FILE_BINARNI, "rb");
+    if (fp == NULL) return 1;
+    
+    Pacijent temp_pacijent;
+    while (fread(&temp_pacijent, sizeof(Pacijent), 1, fp) == 1) {
+        dodaj_pacijenta_u_listu(lista, &temp_pacijent);  // READ iz binarne datoteke
+    }
+    fclose(fp);
+    return 1;
+}
+
+// --- UPDATE ---
+// Datoteka: pacijent.c
+void azuriraj_rizik_pacijenta(const char *prezime) {
+    for (int i = 0; i < lista_pacijenata.count; i++) {
+        if (strcmp(lista_pacijenata.pacijenti[i].prezime, prezime) == 0) {
+            lista_pacijenata.pacijenti[i].rizik_postotak = unos_float("Novi rizik (%%) - ");
+            printf("[+] Azuriran!\n");  // UPDATE podataka
+            return;
+        }
+    }
+}
+
+// --- DELETE ---
+// Datoteka: pacijent.c
+void obrisi_pacijenta(const char *prezime) {
+    for (int i = 0; i < lista_pacijenata.count; i++) {
+        if (strcmp(lista_pacijenata.pacijenti[i].prezime, prezime) == 0) {
+            for (int j = i; j < lista_pacijenata.count - 1; j++) {
+                lista_pacijenata.pacijenti[j] = lista_pacijenata.pacijenti[j + 1];
+            }
+            lista_pacijenata.count--;  // DELETE pacijenta
+            printf("[+] Pacijent obrisan!\n");
+            return;
+        }
+    }
+}
+
+2. ODABIR KONKRETNIH PRIMITIVNIH TIPOVA PODATAKA
+   Za rad sa cjelobrojnim (int) i realnim (float) konstantama
+
+   Primjer koda:
+
+// Datoteka: pacijent.h
+typedef struct {
+    char ime[50];               // char - string
+    char prezime[50];           // char - string
+    int godine;                 // int - primitivni tip (cijeli broj)
+    float rizik_postotak;       // float - primitivni tip (realni broj)
+    char tip_pregleda[30];      // char - string
+    char dijagnoza[100];        // char - string
+    time_t datum_unosa;         // time_t - vremenska vrijednost
+} Pacijent;
+
+// Datoteka: ui.c
+int unos_broja(const char *pitanje) {
+    int broj;                   // int - primitivni tip
+    printf("%s", pitanje);
+    scanf("%d", &broj);
+    getchar();
+    return broj;
+}
+
+float unos_float(const char *pitanje) {
+    float broj;                 // float - primitivni tip
+    printf("%s", pitanje);
+    scanf("%f", &broj);
+    getchar();
+    return broj;
+}
+
+3. ODABIR KONKRETNIH SLOZENIH TIPOVA PODATAKA
+   Za rad sa specifičnim objektima (strukture)
+
+   Primjer koda:
+
+// Datoteka: pacijent.h
+
+// SLOZENI TIP 1 - Pacijent
+typedef struct {
+    char ime[50];
+    char prezime[50];
+    int godine;
+    float rizik_postotak;
+    char tip_pregleda[30];
+    char dijagnoza[100];
+    time_t datum_unosa;
+} Pacijent;  // Kombinacija vise podataka
+
+// SLOZENI TIP 2 - Lista pacijenata
+typedef struct {
+    Pacijent *pacijenti;
+    int count;
+    int capacity;
+} PacijentList;  // Kombinacija vise podataka
+
+// SLOZENI TIP 3 - Cvor povezane liste
+typedef struct Node {
+    Pacijent data;
+    struct Node *next;
+    struct Node *prev;
+} Node;  // Kombinacija vise podataka
+
+// SLOZENI TIP 4 - Dnevnik boravka
+typedef struct {
+    int dan;
+    char osjecaj[100];
+    float temperatura;
+    char napomena[200];
+} DnevnikBoravka;  // Kombinacija vise podataka
+
+4. PRIMJENA TYPEDEF SA STRUKTURAMA I ENUM TIPOVIMA
+
+   Primjer koda:
+
+
+// Datoteka: pacijent.h
+
+// TYPEDEF + STRUCT - Pacijent
+typedef struct {
+    char ime[50];
+    char prezime[50];
+    int godine;
+    float rizik_postotak;
+    char tip_pregleda[30];
+    char dijagnoza[100];
+} Pacijent;  // Umjesto: struct Pacijent - samo: Pacijent
+
+// TYPEDEF + ENUM - Menu opcije
+typedef enum {
+    MELANOM = 1,
+    PLUCA = 2,
+    PROSTATA = 3,
+    PRIKAZI = 4,
+    STATISTIKA = 5,
+    SORTIRAJ_RIZIK = 6,
+    PRETRAGA_RIZIK = 7,
+    PRIKAZI_POVEZANU = 8,
+    AZURIRANJE = 9,
+    BRISANJE = 10,
+    PRETRAGA_PREZIME = 11,
+    DNEVNIK_BORAVKA = 12,
+    IZVJESTAJ_CSV = 13,
+    ALARM_RIZIK = 14,
+    BACKUP = 15,
+    IZLAZ = 0
+} MenuOpcije;
+
+// Datoteka: main.c
+// Korištenje enum u switch naredbi
+switch(izbor) {
+    case MELANOM:           // Koristi enum vrijednost
+        procjena_melanoma();
+        break;
+    case PLUCA:             // Koristi enum vrijednost
+        procjena_pluca();
+        break;
+    case IZLAZ:             // Koristi enum vrijednost
+        return EXIT_SUCCESS;
+}
+
+5. IMENOVANJE IDENTIFIKATORA
+   Upotreba camelCase, PascalCase i snake_case konzistentno kroz projekt
+
+   Primjer koda:
+
+// Datoteka: pacijent.h
+
+// PascalCase - Tipovi (strukture, enum)
+typedef struct { ... } Pacijent;         // PascalCase
+typedef struct { ... } PacijentList;     // PascalCase
+typedef struct { ... } DnevnikBoravka;   // PascalCase
+typedef enum { ... } MenuOpcije;         // PascalCase
+
+// UPPERCASE - Konstante
+#define MAX_STRING 100
+#define MAX_PATIENTS 1000
+#define INITIAL_CAPACITY 50
+#define BUFFER_SIZE 256
+#define FILE_BINARNI "kartoni.bin"
+#define FILE_CSV "izvjestaj.csv"
+#define FILE_BACKUP "backup.bin"
+
+// Datoteka: ui.c, lista.c, datoteke.c
+
+// snake_case - Funkcije
+void unos_string(char *buffer, int max_size, const char *prompt)
+void prikazi_pacijente_funkcija(void)
+void sortiraj_pacijente_po_riziku(void)
+int dodaj_pacijenta_u_listu(PacijentList *lista, const Pacijent *pacijent)
+void oslobodi_listu(PacijentList *lista)
+
+// camelCase - Varijable
+int broj;
+float temperatura;
+char prezime[50];
+int daniBolovanja;
+float prosjecanRizik;
+
+6. PRIMJENA KLJUCNE RIJECI STATIC
+   Za globalne i lokalne varijable - ogranicava doseg
+
+   Primjer koda:
+
+// Datoteka: ui.c
+
+// STATIC - Lokalna varijabla (vidljiva samo u ovoj funkciji)
+static int compare_pacijenti_po_riziku(const void *a, const void *b) {
+    const Pacijent *p1 = (const Pacijent *)a;
+    const Pacijent *p2 = (const Pacijent *)b;
+    
+    if (p1->rizik_postotak < p2->rizik_postotak) return 1;
+    if (p1->rizik_postotak > p2->rizik_postotak) return -1;
+    return 0;
+}
+
+// Ova funkcija se koristi samo u ui.c preko qsort
+qsort(lista_pacijenata.pacijenti,
+      lista_pacijenata.count,
+      sizeof(Pacijent),
+      compare_pacijenti_po_riziku);  // Privatna funkcija - static
+
+7. ORGANIZACIJA IZVORNOG KODA
+   Odvajanje koda u zasebne datoteke po funkcionalnosti
+
+   Primjer strukture:
+
+Datoteke:
+- pacijent.h    --> Header - sve deklaracije (strukture, enum, funkcije)
+- pacijent.c    --> Moduli pregleda (Melanom, Pluca, Prostata)
+- lista.c       --> Upravljanje dinamickom listom
+- datoteke.c    --> Rad sa datotekama (tekstualna, binarna)
+- ui.c          --> Korisnicki interfejs
+- main.c        --> Glavna datoteka sa main() funkcijom
+- Makefile      --> Automatizacija kompajliranja
+
+Makefile:
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c99
+TARGET = onkoc
+
+SOURCES = main.c pacijent.c lista.c datoteke.c ui.c
+OBJECTS = main.o pacijent.o lista.o datoteke.o ui.o
+
+all: $(TARGET)
+$(TARGET): $(OBJECTS)
+    $(CC) $(CFLAGS) -o $(TARGET) $(OBJECTS)
+%.o: %.c pacijent.h
+    $(CC) $(CFLAGS) -c $<
+
+8. PRIMJENA EXTERN KLJUCNE RIJECI
+   Za globalne varijable - deklaracija da su dostupne drugim datotekama
+
+   Primjer koda:
+
+// Datoteka: pacijent.h
+// DEKLARACIJA - extern (samo deklaracija, ne definicija!)
+extern PacijentList lista_pacijenata;
+extern DvostrukaPovezanaLista dvostuka_lista;
+extern Korisnik trenutni_korisnik;
+
+// Datoteka: main.c
+// DEFINICIJA - samo jednom, bez extern!
+PacijentList lista_pacijenata = {NULL, 0, 0};
+DvostrukaPovezanaLista dvostuka_lista = {NULL, NULL, 0};
+Korisnik trenutni_korisnik = {"", "", ""};
+
+// Datoteka: pacijent.c, lista.c, datoteke.c, ui.c
+// KORIŠTENJE - kroz extern deklaraciju iz pacijent.h
+lista_pacijenata.count++;   // Dostupna jer je extern u headeru
+dvostuka_lista.head;         // Dostupna jer je extern u headeru
+
+9. MAKRO FUNKCIJE ILI INLINE FUNKCIJE
+   Za jednostavne operacije - brze izvršavanje
+
+   Primjer koda:
+
+// Datoteka: pacijent.h
+
+// MAKRO 1 - Provjera memorije
+#define PROVJERA_MEMORIJE(ptr) \
+    do { \
+        if ((ptr) == NULL) { \
+            fprintf(stderr, "[!] GRESKA: Alokacija memorije neuspjesna!\n"); \
+            perror("malloc"); \
+            exit(EXIT_FAILURE); \
+        } \
+    } while(0)
+
+// MAKRO 2 - Provjera datoteke
+#define PROVJERA_DATOTEKE(fp) \
+    do { \
+        if ((fp) == NULL) { \
+            fprintf(stderr, "[!] GRESKA: Datoteka ne moze biti otvorena!\n"); \
+            perror("fopen"); \
+        } \
+    } while(0)
+
+// MAKRO 3 - Provjera NULL
+#define PROVJERA_NULL(ptr) \
+    do { \
+        if ((ptr) == NULL) return 0; \
+    } while(0)
+
+// Datoteka: lista.c - KORIŠTENJE MAKRA
+int inicijalizuj_listu(PacijentList *lista) {
+    lista->pacijenti = (Pacijent *)malloc(lista->capacity * sizeof(Pacijent));
+    PROVJERA_MEMORIJE(lista->pacijenti);  // KORIŠTENJE MAKRA - zamjenjuje se sa sadrzajem makra
+    return 1;
+}
+
+// Datoteka: datoteke.c - KORIŠTENJE MAKRA
+void spremi_u_datoteku_binarno(const Pacijent *p) {
+    if (p == NULL) return;
+    FILE *fp = fopen(FILE_BINARNI, "ab");
+    PROVJERA_DATOTEKE(fp);  // KORIŠTENJE MAKRA
+}
+
+10. IZBORNIK / PODIZBORNICI
+    Interaktivni meni za biranje opcija
+      
+    Primjer koda:
+
+// Datoteka: ui.c
+void prikazi_meni(void) {
+    printf("\n==================================================\n");
+    printf("   OnkoC v4.0 - SUSTAV ZA OTKRIVANJE TUMORA   \n");
+    printf("==================================================\n\n");
+    printf(" [1]  Dodaj melanom (ABCD kriterij)\n");
+    printf(" [2]  Dodaj pluca (Anamneza)\n");
+    printf(" [3]  Dodaj prostatu (Simptomi)\n");
+    printf(" [4]  Prikazi sve pacijente\n");
+    printf(" [5]  Statistika\n");
+    printf(" [6]  Sortiraj po riziku (qsort - silazno)\n");
+    printf(" [7]  Pretraga po riziku\n");
+    printf(" [8]  Prikazi povezanu listu\n");
+    printf(" [9]  Azuriraj rizik pacijenta (UPDATE)\n");
+    printf(" [10] Obrisi pacijenta (DELETE)\n");
+    printf(" [11] Pretraga po prezimenu\n");
+    printf(" [12] Dnevnik boravka pacijenta\n");
+    printf(" [13] Izvezi CSV izvjestaj\n");
+    printf(" [14] Provjeri alarm (visok rizik)\n");
+    printf(" [15] Napravi backup\n");
+    printf(" [0]  Izlaz\n");
+    printf("\n==================================================\n");
+}
+
+// Datoteka: main.c
+int main(void) {
+    // ... inicijalizacija ...
+    
+    do {
+        ocisti_ekran();
+        prikazi_meni();  // Prikazuje izbornik
+        izbor = unos_broja("\n >> Vas izbor: ");  // Korisnik unosi izbor
+        
+        switch(izbor) {  // Izvršava odabranu opciju
+            case 1:
+                procjena_melanoma();
+                break;
+            case 2:
+                procjena_pluca();
+                break;
+            case 0:
+                return EXIT_SUCCESS;
+        }
+        
+    } while (1);  // Meni se ponavlja
+}
+
+11. KOD IZBORNIKA KORISTITI ENUM TIPOVE ILI MAKRO SIMBOLE
+    Korištenje enum konstanti umjesto magicnih brojeva
+
+    Primjer koda:
+
+// Datoteka: pacijent.h
+typedef enum {
+    MELANOM = 1,
+    PLUCA = 2,
+    PROSTATA = 3,
+    PRIKAZI = 4,
+    STATISTIKA = 5,
+    SORTIRAJ_RIZIK = 6,
+    PRETRAGA_RIZIK = 7,
+    PRIKAZI_POVEZANU = 8,
+    AZURIRANJE = 9,
+    BRISANJE = 10,
+    PRETRAGA_PREZIME = 11,
+    DNEVNIK_BORAVKA = 12,
+    IZVJESTAJ_CSV = 13,
+    ALARM_RIZIK = 14,
+    BACKUP = 15,
+    IZLAZ = 0
+} MenuOpcije;
+
+// Datoteka: main.c
+// Korištenje enum vrijednosti
+switch(izbor) {
+    case MELANOM:              // Koristi enum, ne broja 1
+        procjena_melanoma();
+        break;
+    case PLUCA:                // Koristi enum, ne broja 2
+        procjena_pluca();
+        break;
+    case STATISTIKA:           // Koristi enum, ne broja 5
+        prikazi_statistiku();
+        break;
+    case IZLAZ:                // Koristi enum, ne broja 0
+        printf("\nDovidenja!\n");
+        return EXIT_SUCCESS;
+}
+
+12. GENERALNO UPOTREBA POKAZIVACA
+    Korištenje pokazivača gdje su potrebni
+
+    Primjer koda:
+
+// Datoteka: pacijent.h
+typedef struct {
+    Pacijent *pacijenti;    // Pokazivač na niz pacijenata
+    int count;
+    int capacity;
+} PacijentList;
+
+typedef struct Node {
+    Pacijent data;
+    struct Node *next;      // Pokazivač na sljedeći čvor
+    struct Node *prev;      // Pokazivač na prethodni čvor
+} Node;
+
+// Datoteka: lista.c
+int dodaj_pacijenta_u_listu(PacijentList *lista, const Pacijent *pacijent) {
+    // Pokazivač na listu (*lista)
+    // Pokazivač na pacijenta (*pacijent)
+    
+    if (lista == NULL || pacijent == NULL) return 0;  // Provjera pokazivača
+    
+    lista->pacijenti[lista->count] = *pacijent;  // * za pristup podacima
+    lista->count++;
+    return 1;
+}
+
+// Datoteka: datoteke.c
+void spremi_u_datoteku_binarno(const Pacijent *p) {
+    if (p == NULL) return;  // Provjera pokazivača
+    
+    FILE *fp = fopen(FILE_BINARNI, "ab");  // Pokazivač na datoteku
+    fwrite(p, sizeof(Pacijent), 1, fp);    // p je pokazivač
+    fclose(fp);
+}
+
+// Datoteka: ui.c
+void unos_string(char *buffer, int max_size, const char *prompt) {
+    // Pokazivač na buffer (*buffer)
+    if (buffer == NULL || max_size <= 0) return;  // Provjera pokazivača
+    printf("%s", prompt);
+    fgets(buffer, max_size, stdin);
+}
+
+13. GENERALNO UPOTREBA STRUKTURA I FUNKCIJA
+    Sve podatke organizirati u strukture i sve operacije u funkcije
+
+    Primjer koda:
+
+// Datoteka: pacijent.h
+
+// STRUKTURA - Pacijent sadrži sve podatke o pacijentu
+typedef struct {
+    char ime[50];
+    char prezime[50];
+    int godine;
+    float rizik_postotak;
+    char tip_pregleda[30];
+    char dijagnoza[100];
+    time_t datum_unosa;
+} Pacijent;
+
+// STRUKTURA - Lista sadrži sve pacijente
+typedef struct {
+    Pacijent *pacijenti;
+    int count;
+    int capacity;
+} PacijentList;
+
+// Datoteka: pacijent.c
+
+// FUNKCIJA - Radi sa strukturom Pacijent
+void procjena_melanoma(void) {
+    Pacijent p;  // Lokalna varijabla tipa Pacijent (STRUKTURA)
+    unos_string(p.ime, sizeof(p.ime), "Ime: ");
+    p.godine = unos_broja("godine: ");
+    // ... rad sa strukturom p ...
+    dodaj_pacijenta_u_listu(&lista_pacijenata, &p);  // Funkcija prima strukturu
+}
+
+// Datoteka: lista.c
+
+// FUNKCIJA - Radi sa strukturom PacijentList
+int dodaj_pacijenta_u_listu(PacijentList *lista, const Pacijent *pacijent) {
+    if (lista == NULL || pacijent == NULL) return 0;
+    lista->pacijenti[lista->count] = *pacijent;
+    lista->count++;
+    return 1;
+}
+
+14. ZASTITA PARAMETARA KOD SVIH FUNKCIJA
+    Provjera pokazivača da izbjegneš greške
+
+    Primjer koda:
+
+// Datoteka: lista.c
+
+// ZASTITENA FUNKCIJA - Provjera NULL pokazivača
+int inicijalizuj_listu(PacijentList *lista) {
+    if (lista == NULL) return 0;  // ZASTITA - provjera NULL
+    
+    lista->capacity = INITIAL_CAPACITY;
+    lista->pacijenti = (Pacijent *)malloc(lista->capacity * sizeof(Pacijent));
+    return 1;
+}
+
+int dodaj_pacijenta_u_listu(PacijentList *lista, const Pacijent *pacijent) {
+    if (lista == NULL || pacijent == NULL) return 0;  // ZASTITA - dvije provjere
+    lista->pacijenti[lista->count] = *pacijent;
+    return 1;
+}
+
+// Datoteka: datoteke.c
+
+// ZASTITENA FUNKCIJA - Provjera NULL
+void spremi_u_datoteku_binarno(const Pacijent *p) {
+    if (p == NULL) return;  // ZASTITA - provjera NULL
+    FILE *fp = fopen(FILE_BINARNI, "ab");
+    // ...
+}
+
+int kopiraj_datoteku(const char *izvor, const char *odrediste) {
+    if (izvor == NULL || odrediste == NULL) return 0;  // ZASTITA - dvije provjere
+    // ...
+}
+
+// Datoteka: ui.c
+
+// ZASTITENA FUNKCIJA - Provjera NULL
+void unos_string(char *buffer, int max_size, const char *prompt) {
+    if (buffer == NULL || max_size <= 0) return;  // ZASTITA - dvije provjere
+    printf("%s", prompt);
+    fgets(buffer, max_size, stdin);
+}
+
+void prikazi_povezanu_listu(const DvostrukaPovezanaLista *lista) {
+    if (lista == NULL || lista->head == NULL) {  // ZASTITA - dvije provjere
+        printf(" Povezana lista je prazna.\n");
+        return;
+    }
+}
+
+15. KORISTITI STATICKA ALOCIRANA POLJA
+    Nikada ne koristiti VLA (Variable Length Arrays)
+
+    Primjer koda:
+
+// DOBRO - Statički alocirana polja
+// Datoteka: pacijent.h
+typedef struct {
+    char ime[50];               // Fiksna veličina - DOBRO!
+    char prezime[50];           // Fiksna veličina - DOBRO!
+    char tip_pregleda[30];      // Fiksna veličina - DOBRO!
+    char dijagnoza[100];        // Fiksna veličina - DOBRO!
+} Pacijent;
+
+typedef struct {
+    int dan;
+    char osjecaj[100];          // Fiksna veličina - DOBRO!
+    char napomena[200];         // Fiksna veličina - DOBRO!
+} DnevnikBoravka;
+
+// Datoteka: datoteke.c
+char buffer[BUFFER_SIZE];       // Fiksna veličina - DOBRO!
+
+// Datoteka: ui.c
+void pretraga_prezime(void) {
+    char pre[50];               // Fiksna veličina - DOBRO!
+    unos_string(pre, sizeof(pre), "Unesite prezime: ");
+}
+
+// LOSE - Nikada koristiti VLA!
+// char buffer[n];             // LOSE! - Varijabilna veličina
+// int niz[broj_elemenata];    // LOSE! - Varijabilna veličina
+// char stringovi[n][100];     // LOSE! - Varijabilna veličina
+
+16. KORISTITI DINAMICKO ZAUZIMANJE MEMORIJE
+    Za bilo koji tip podatka, osobito za složene tipove
+
+    Primjer koda:
+
+// Datoteka: lista.c
+
+// DINAMICKA MEMORIJA - Alokacija za pacijente
+int inicijalizuj_listu(PacijentList *lista) {
+    if (lista == NULL) return 0;
+    
+    lista->capacity = INITIAL_CAPACITY;
+    lista->count = 0;
+    
+    // DINAMICKA ALOKACIJA sa malloc
+    lista->pacijenti = (Pacijent *)malloc(lista->capacity * sizeof(Pacijent));
+    PROVJERA_MEMORIJE(lista->pacijenti);  // Provjeri je li uspjesna alokacija
+    
+    return 1;
+}
+
+// Datoteka: ui.c
+
+// DINAMICKA MEMORIJA - Alokacija za dnevnik
+void unos_i_prikaz_dnevnika_boravka(void) {
+    int broj_dana = unos_broja("Koliko je pacijent proveo dana u bolnici? ");
+    
+    // DINAMICKA ALOKACIJA sa malloc
+    DnevnikBoravka *dnevnik = (DnevnikBoravka *)malloc(broj_dana * sizeof(DnevnikBoravka));
+    if (dnevnik == NULL) {
+        printf("[!] Greska pri alokaciji memorije!\n");
+        perror("malloc");
+        return;
+    }
+    
+    // ... rad sa dnevnikom ...
+    
+    free(dnevnik);  // OSLOBADI memoriju kada vise nije potrebna
+    dnevnik = NULL;
+}
+
+17. KORISTITI malloc(), calloc(), realloc(), free()
+    Sve funkcije za dinamičko upravljanje memorijom
+
+    Primjer koda:
+
+// Datoteka: lista.c
+
+// MALLOC - Bazična alokacija
+lista->pacijenti = (Pacijent *)malloc(lista->capacity * sizeof(Pacijent));
+
+// REALLOC - Prosljedjenje memorije kada se popuni
+int prosliri_listu(PacijentList *lista) {
+    int nova_kapaciteta = lista->capacity * 2;
+    
+    // REALLOC - Prosljedjenje postojeće memorije
+    Pacijent *temp = (Pacijent *)realloc(lista->pacijenti, 
+                                         nova_kapaciteta * sizeof(Pacijent));
+    PROVJERA_MEMORIJE(temp);
+    
+    lista->pacijenti = temp;
+    lista->capacity = nova_kapaciteta;
+    return 1;
+}
+
+// FREE - Oslobađanje memorije
+void oslobodi_listu(PacijentList *lista) {
+    if (lista == NULL) return;
+    if (lista->pacijenti != NULL) {
+        free(lista->pacijenti);  // FREE - Oslobadi memoriju
+        lista->pacijenti = NULL;  // Postavi na NULL
+    }
+}
+
+// Datoteka: ui.c
+
+// MALLOC - Alokacija za dnevnik
+DnevnikBoravka *dnevnik = (DnevnikBoravka *)malloc(broj_dana * sizeof(DnevnikBoravka));
+
+// FREE - Oslobađanje memorije
+free(dnevnik);  // FREE - Oslobadi memoriju
+dnevnik = NULL; // Postavi na NULL
+
+18. SIGURNO BRISANJE MEMORIJE
+    Anuliranje memorijskog prostora, provjera pokazivača, sprječavanje double free()
+
+    Primjer koda:
+
+// Datoteka: lista.c
+
+// SIGURNO BRISANJE - Provjera, free, i postavljanje na NULL
+void oslobodi_listu(PacijentList *lista) {
+    if (lista == NULL) return;  // PROVJERA 1 - je li lista NULL?
+    
+    if (lista->pacijenti != NULL) {  // PROVJERA 2 - je li pokazivač NULL?
+        free(lista->pacijenti);      // FREE - Oslobadi memoriju
+        lista->pacijenti = NULL;     // NULL - Postavi na NULL (sprječava double free)
+    }
+    
+    lista->count = 0;    // Resetiraj brojač
+    lista->capacity = 0; // Resetiraj kapacitet
+}
+
+// SIGURNO BRISANJE - Dvostruke liste
+void oslobodi_povezanu_listu(DvostrukaPovezanaLista *lista) {
+    if (lista == NULL) return;  // PROVJERA 1
+    
+    Node *trenutni = lista->head;
+    while (trenutni != NULL) {
+        Node *temp = trenutni;
+        trenutni = trenutni->next;
+        free(temp);              // FREE - Oslobadi memoriju čvora
+        temp = NULL;             // NULL - Postavi na NULL
+    }
+    
+    lista->head = NULL;  // NULL - Anuliranje pokazivača
+    lista->tail = NULL;  // NULL - Anuliranje pokazivača
+    lista->count = 0;
+}
+
+// Datoteka: ui.c
+
+void unos_i_prikaz_dnevnika_boravka(void) {
+    DnevnikBoravka *dnevnik = (DnevnikBoravka *)malloc(broj_dana * sizeof(DnevnikBoravka));
+    if (dnevnik == NULL) {  // PROVJERA 1
+        printf("[!] Greska pri alokaciji memorije!\n");
+        return;
+    }
+    
+    // ... rad sa dnevnikom ...
+    
+    free(dnevnik);   // FREE - Oslobadi memoriju
+    dnevnik = NULL;  // NULL - Postavi na NULL (sprječava double free)
+}
+
+// Datoteka: main.c
+
+int main(void) {
+    // ... rad ...
+    
+    oslobodi_listu(&lista_pacijenata);           // SIGURNO BRISANJE
+    oslobodi_povezanu_listu(&dvostuka_lista);    // SIGURNO BRISANJE
+    return EXIT_SUCCESS;
+}
+
+19. DATOTEKE - TEKSTUALNA ILI BINARNA
+    Provjera pokazivača FILE* i zatvaranje datoteke sa fclose()
+
+    Primjer koda:
+
+// Datoteka: datoteke.c
+
+// TEKSTUALNA DATOTEKA - Pisanje
+void spremi_u_datoteku_tekstualno(const Pacijent *p) {
+    if (p == NULL) return;  // ZASTITА - provjera NULL
+    
+    // FOPEN - Otvori datoteku
+    FILE *fp = fopen("kartoni.txt", "a");
+    if (fp == NULL) {  // PROVJERA - je li fopen uspio?
+        printf(" [!] Greska pri otvaranju datoteke!\n");
+        perror("fopen");
+        return;
+    }
+    
+    // FPRINTF - Pisi u tekstualnu datoteku
+    fprintf(fp, "%-12s %-12s %-4d %-15s %-7.2f%% %-30s\n",
+            p->ime, p->prezime, p->godine, p->tip_pregleda, 
+            p->rizik_postotak, p->dijagnoza);
+    
+    if (ferror(fp)) {  // PROVJERA - je li pisanje uspjesno?
+        printf("[!] Greska pri pisanju u datoteku!\n");
+    }
+    
+    fclose(fp);  // FCLOSE - Obavezno zatvori datoteku
+}
+
+// TEKSTUALNA DATOTEKA - Čitanje
+int ucitaj_pacijente_iz_datoteke_tekstualno(PacijentList *lista) {
+    if (lista == NULL) return 0;
+    
+    // FOPEN - Otvori datoteku
+    FILE *fp = fopen("kartoni.txt", "r");
+    if (fp == NULL) {  // PROVJERA - je li fopen uspio?
+        printf(" Tekstualna datoteka ne postoji ili je prazna.\n");
+        return 1;
+    }
+    
+    Pacijent temp_pacijent;
+    
+    // FSCANF - Čitaj iz tekstualne datoteke
+    while (fscanf(fp, "%49s %49s %d %29s %f %99s",
+                  temp_pacijent.ime,
+                  temp_pacijent.prezime,
+                  &temp_pacijent.godine,
+                  temp_pacijent.tip_pregleda,
+                  &temp_pacijent.rizik_postotak,
+                  temp_pacijent.dijagnoza) == 6) {
+        
+        dodaj_pacijenta_u_listu(lista, &temp_pacijent);
+    }
+    
+    if (ferror(fp)) {  // PROVJERA - je li čitanje imalo greške?
+        printf("[!] Greska pri citanju datoteke!\n");
+    }
+    
+    fclose(fp);  // FCLOSE - Obavezno zatvori datoteku
+    return 1;
+}
+
+// BINARNA DATOTEKA - Pisanje
+void spremi_u_datoteku_binarno(const Pacijent *p) {
+    if (p == NULL) return;
+    
+    // FOPEN - Otvori binarnu datoteku
+    FILE *fp = fopen(FILE_BINARNI, "ab");
+    if (fp == NULL) {  // PROVJERA
+        printf(" [!] Greska pri otvaranju binarne datoteke!\n");
+        perror("fopen");
+        return;
+    }
+    
+    // FWRITE - Pisi u binarnu datoteku
+    if (fwrite(p, sizeof(Pacijent), 1, fp) != 1) {
+        printf("[!] Greska pri pisanju binarne datoteke!\n");
+        perror("fwrite");
+    }
+    
+    fclose(fp);  // FCLOSE
+}
+
+// BINARNA DATOTEKA - Čitanje
+int ucitaj_pacijente_iz_datoteke_binarno(PacijentList *lista) {
+    if (lista == NULL) return 0;
+    
+    // FOPEN - Otvori binarnu datoteku
+    FILE *fp = fopen(FILE_BINARNI, "rb");
+    if (fp == NULL) {  // PROVJERA
+        printf(" Binarna datoteka ne postoji ili je prazna.\n");
+        return 1;
+    }
+    
+    Pacijent temp_pacijent;
+    
+    // FREAD - Čitaj iz binarne datoteke
+    while (fread(&temp_pacijent, sizeof(Pacijent), 1, fp) == 1) {
+        dodaj_pacijenta_u_listu(lista, &temp_pacijent);
+    }
+    
+    if (ferror(fp)) {  // PROVJERA
+        printf("[!] Greska pri citanju binarne datoteke!\n");
+    }
+    
+    fclose(fp);  // FCLOSE
+    return 1;
+}
+
+20. KORISTITI fseek(), ftell(), rewind()
+    Pozicioniranje u datotekama (BONUS - nije obavezno)
+
+    Primjer koda:
+
+// NAPOMENA: U trenutnom projektu ove funkcije nisu korištene,
+// ali mogu se koristiti u naprednim operacijama
+
+// PRIMJER REWIND - Čitaj datoteku dva puta
+void primjer_rewind() {
+    FILE *fp = fopen("kartoni.txt", "r");
+    
+    // PRVI PROSJEK - Broji pacijente
+    int broj = 0;
+    char linija[256];
+    while (fgets(linija, sizeof(linija), fp) != NULL) {
+        broj++;
+    }
+    
+    // REWIND - Vrati se na početak
+    rewind(fp);
+    
+    // DRUGI PROSJEK - Čitaj ponovno
+    while (fgets(linija, sizeof(linija), fp) != NULL) {
+        // ...
+    }
+    
+    fclose(fp);
+}
+
+// PRIMJER FSEEK - Idi na određenu poziciju
+void primjer_fseek() {
+    FILE *fp = fopen("kartoni.bin", "rb");
+    
+    // FSEEK - Idi na 100. bajt od početka
+    fseek(fp, 100, SEEK_SET);
+    
+    // FSEEK - Idi 50 bajtova prije kraja
+    fseek(fp, -50, SEEK_END);
+    
+    // FTELL - Koja je trenutna pozicija?
+    long pozicija = ftell(fp);
+    printf("Trenutna pozicija: %ld\n", pozicija);
+    
+    fclose(fp);
+}
+
+21. KORISTITI remove(), rename(), kopiraj datoteku
+    Upravljanje datotekama - brisanje, preimenovanje, kopiranje
+
+    Primjer koda:
+
+
+// Datoteka: datoteke.c
+
+// REMOVE - Brisanje datoteke
+int obrisi_datoteku(void) {
+    // REMOVE - Obriši binarnu datoteku
+    if (remove(FILE_BINARNI) == 0) {
+        printf("[+] Binarna datoteka obrisana!\n");
+        return 1;
+    } else {
+        printf("[!] Greska pri brisanju binarne datoteke!\n");
+        perror("remove");  // Ispisuje sistemsku grešku
+        return 0;
+    }
+}
+
+// RENAME - Preimenovanje datoteke
+int preimenuj_datoteku(const char *stara, const char *nova) {
+    if (stara == NULL || nova == NULL) return 0;
+    
+    // RENAME - Preimenuj datoteku
+    if (rename(stara, nova) == 0) {
+        printf("[+] Datoteka preimenovana: %s -> %s\n", stara, nova);
+        return 1;
+    } else {
+        printf("[!] Greska pri preimenovanju datoteke!\n");
+        perror("rename");  // Ispisuje sistemsku grešku
+        return 0;
+    }
+}
+
+// KOPIRAJ - Kopiranje datoteke
+int kopiraj_datoteku(const char *izvor, const char *odrediste) {
+    if (izvor == NULL || odrediste == NULL) return 0;
+    
+    // FOPEN - Otvori izvornu datoteku
+    FILE *src = fopen(izvor, "rb");
+    if (src == NULL) {
+        printf("[!] Greska pri otvaranju izvorne datoteke!\n");
+        perror("fopen");
+        return 0;
+    }
+    
+    // FOPEN - Otvori ciljnu datoteku
+    FILE *dst = fopen(odrediste, "wb");
+    if (dst == NULL) {
+        printf("[!] Greska pri otvaranju odredisne datoteke!\n");
+        perror("fopen");
+        fclose(src);
+        return 0;
+    }
+    
+    // KOPIRAJ - Citaj i pisi u manjim dijelovima
+    char buffer[BUFFER_SIZE];
+    size_t bytes;
+    
+    while ((bytes = fread(buffer, 1, BUFFER_SIZE, src)) > 0) {
+        fwrite(buffer, 1, bytes, dst);
+    }
+    
+    if (ferror(src) || ferror(dst)) {
+        printf("[!] Greska tijekom kopiranja!\n");
+        perror("read/write");
+        fclose(src);
+        fclose(dst);
+        return 0;
+    }
+    
+    fclose(src);
+    fclose(dst);
+    printf("[+] Datoteka kopirana: %s -> %s\n", izvor, odrediste);
+    return 1;
+}
+
+// BACKUP - Napraviti backup
+int napravi_backup(void) {
+    if (kopiraj_datoteku(FILE_BINARNI, FILE_BACKUP)) {
+        printf("[+] Backup napravljen!\n");
+        return 1;
+    }
+    return 0;
+}
+
+22. UPRAVLJANJE S GREŠKAMA
+    errno, perror(), strerror(), feof(), ferror()
+
+    Primjer koda:
+
+
+// Datoteka: datoteke.c
+
+// PERROR - Ispisuje grešku
+void spremi_u_datoteku_tekstualno(const Pacijent *p) {
+    FILE *fp = fopen("kartoni.txt", "a");
+    if (fp == NULL) {
+        printf(" [!] Greska pri otvaranju datoteke!\n");
+        perror("fopen");  // PERROR - ispisuje sistemsku grešku
+        return;
+    }
+}
+
+// FERROR - Provjera greške pri pisanju
+if (ferror(fp)) {  // FERROR - provjeravaju je li greške tijekom pisanja
+    printf("[!] Greska pri pisanju u datoteku!\n");
+    perror("fprintf");
+}
+
+// FEOF - Provjera kraja datoteke
+int ucitaj_pacijente_iz_datoteke_tekstualno(PacijentList *lista) {
+    FILE *fp = fopen("kartoni.txt", "r");
+    
+    while (fscanf(...) == 6) {
+        // Čitaj podatke
+    }
+    
+    if (feof(fp)) {  // FEOF - Provjera je li normalno dosegnut kraj
+        // Normalan kraj
+    } else if (ferror(fp)) {  // FERROR - Provjera je li došlo do greške
+        printf("[!] Greska pri citanju datoteke!\n");
+        perror("fscanf");  // PERROR - ispisuje opis greške
+    }
+    
+    fclose(fp);
+}
+
+// Datoteka: ui.c
+
+// PERROR - Greška pri alokaciji memorije
+void unos_i_prikaz_dnevnika_boravka(void) {
+    DnevnikBoravka *dnevnik = (DnevnikBoravka *)malloc(broj_dana * sizeof(DnevnikBoravka));
+    if (dnevnik == NULL) {
+        printf("[!] Greska pri alokaciji memorije!\n");
+        perror("malloc");  // PERROR
+        return;
+    }
+}
+
+// STRERROR - Detaljniji opis greške
+if (remove(FILE_BINARNI) != 0) {
+    printf("[!] Greska pri brisanju: %s\n", strerror(errno));  // STRERROR + errno
+}
+
+23. SORTIRANJE
+    Korištenje ugrađene qsort() funkcije sa custom comparator funkcijom
+
+    Primjer koda:
+
+
+// Datoteka: ui.c
+
+// COMPARATOR - Funkcija za usporedbu pacijenata po riziku
+static int compare_pacijenti_po_riziku(const void *a, const void *b) {
+    const Pacijent *p1 = (const Pacijent *)a;
+    const Pacijent *p2 = (const Pacijent *)b;
+    
+    // Silazno sortiranje - od najvećeg do najmanjeg rizika
+    if (p1->rizik_postotak < p2->rizik_postotak) return 1;   // p1 ide dalje
+    if (p1->rizik_postotak > p2->rizik_postotak) return -1;  // p1 ide prije
+    return 0;  // Jednaki su
+}
+
+// QSORT - Sortiranje pacijenata po riziku
+void sortiraj_pacijente_po_riziku(void) {
+    ocisti_ekran();
+    printf("=== SORTIRANJE PO RIZIKU (qsort) - SILAZNO ===\n");
+    
+    if (lista_pacijenata.count == 0) {
+        printf("Nema pacijenata za sortiranje!\n");
+        return;
+    }
+    
+    // QSORT - Sortiraj prijejece
+    qsort(lista_pacijenata.pacijenti,      // Niz koji se sortira
+          lista_pacijenata.count,            // Broj elemenata
+          sizeof(Pacijent),                  // Veličina svakog elementa
+          compare_pacijenti_po_riziku);      // Pokazivač na comparator funkciju
+    
+    printf("[+] Sortirano (od najveceg do najmanjeg rizika)!\n");
+    
+    // Ispis sortiranog niza
+    printf("%-12s %-12s %-4s %-15s %-8s %-30s\n", 
+           "IME", "PREZIME", "GOD", "TIP", "RIZIK", "DIJAGNOZA");
+    printf("---------------------------------------------------------------\n");
+    
+    for (int i = 0; i < lista_pacijenata.count; i++) {
+        printf("%-12s %-12s %-4d %-15s %-7.2f%% %-30s\n",
+               lista_pacijenata.pacijenti[i].ime,
+               lista_pacijenata.pacijenti[i].prezime,
+               lista_pacijenata.pacijenti[i].godine,
+               lista_pacijenata.pacijenti[i].tip_pregleda,
+               lista_pacijenata.pacijenti[i].rizik_postotak,
+               lista_pacijenata.pacijenti[i].dijagnoza);
+    }
+}
+
+
+24. PRETRAZIVANJE
+    Pretraživanje podataka - linearna pretraga ili binarna pretraga
+
+    Primjer koda:
+
+
+// Datoteka: lista.c
+
+// LINEARNA PRETRAGA - U povezanoj listi
+Node* pretraga_u_povezanoj_listi(DvostrukaPovezanaLista *lista, const char *prezime) {
+    if (lista == NULL || prezime == NULL) return NULL;
+    
+    Node *trenutni = lista->head;
+    while (trenutni != NULL) {
+        // PRETRAGA - Usporedba prezimena
+        if (strcmp(trenutni->data.prezime, prezime) == 0) {
+            return trenutni;  // PRONADEN - vrati čvor
+        }
+        trenutni = trenutni->next;  // Idi na sljedeći čvor
+    }
+    return NULL;  // NIJE PRONADEN
+}
+
+// Datoteka: ui.c
+
+// LINEARNA PRETRAGA - Po riziku
+void pretraga_rizik(void) {
+    ocisti_ekran();
+    int min_rizik = unos_broja("Unesite minimalni rizik (%): ");
+    
+    printf("\n--- Pacijenti sa rizikom >= %d%% ---\n", min_rizik);
+    printf("%-12s %-12s %-4s %-15s %-8s %-30s\n", 
+           "IME", "PREZIME", "GOD", "TIP", "RIZIK", "DIJAGNOZA");
+    printf("---------------------------------------------------------------\n");
+    
+    int pronaden = 0;
+    for (int i = 0; i < lista_pacijenata.count; i++) {
+        // PRETRAGA - Usporedba rizika
+        if (lista_pacijenata.pacijenti[i].rizik_postotak >= min_rizik) {
+            printf("%-12s %-12s %-4d %-15s %-7.2f%% %-30s\n",
+                   lista_pacijenata.pacijenti[i].ime,
+                   lista_pacijenata.pacijenti[i].prezime,
+                   lista_pacijenata.pacijenti[i].godine,
+                   lista_pacijenata.pacijenti[i].tip_pregleda,
+                   lista_pacijenata.pacijenti[i].rizik_postotak,
+                   lista_pacijenata.pacijenti[i].dijagnoza);
+            pronaden++;
+        }
+    }
+    
+    if (pronaden == 0) {
+        printf("Nema pacijenata sa tim rizikom!\n");
+    } else {
+        printf("\nPronaiden: %d pacijenata\n", pronaden);
+    }
+}
+
+// PRETRAGA PO PREZIMENU - U povezanoj listi
+void pretraga_prezime(void) {
+    ocisti_ekran();
+    char pre[50];
+    unos_string(pre, sizeof(pre), "Unesite prezime: ");
+    
+    // PRETRAGA - Poziva pretraga_u_povezanoj_listi
+    Node *pronaden = pretraga_u_povezanoj_listi(&dvostuka_lista, pre);
+    if (pronaden != NULL) {
+        printf("\n[+] Pronaden pacijent:\n");
+        printf("%-12s %-12s %-4d %-15s %-7.2f%% %-30s\n",
+               pronaden->data.ime,
+               pronaden->data.prezime,
+               pronaden->data.godine,
+               pronaden->data.tip_pregleda,
+               pronaden->data.rizik_postotak,
+               pronaden->data.dijagnoza);
+    } else {
+        printf("[!] Nema pacijenta s tim prezimenom!\n");
+    }
+}
+
+25. REKURZIJE
+    Rekurzivne funkcije - funkcije koje pozivaju same sebe (BONUS - nije obavezno)
+
+    Primjer koda:
+
+// NAPOMENA: U trenutnom projektu rekurzija nije korištena,
+// ali može se koristiti za napredne operacije
+
+// PRIMJER REKURZIJE - Rekurzivna pretraga u povezanoj listi
+static Node* rekurzivna_pretraga(Node *cvor, const char *prezime) {
+    if (cvor == NULL) return NULL;  // BAZNI SLUCAJ - kraj liste
+    
+    if (strcmp(cvor->data.prezime, prezime) == 0) {
+        return cvor;  // PRONADEN
+    }
+    
+    // REKURZIVNI POZIV - pozovi sa sljedecim cvorom
+    return rekurzivna_pretraga(cvor->next, prezime);
+}
+
+// PRIMJER REKURZIJE - Brojanje čvorova u listi
+static int broji_cvorove(Node *cvor) {
+    if (cvor == NULL) return 0;  // BAZNI SLUCAJ - kraj liste
+    
+    // REKURZIVNI POZIV - broji ovaj + ostatak liste
+    return 1 + broji_cvorove(cvor->next);
+}
+
+// PRIMJER REKURZIJE - Ispis liste unazad
+static void ispis_unazad(Node *cvor) {
+    if (cvor == NULL) return;  // BAZNI SLUCAJ
+    
+    // REKURZIVNI POZIV - idi na kraj, pa ispisi unazad
+    ispis_unazad(cvor->next);
+    printf("%s %s\n", cvor->data.ime, cvor->data.prezime);
+}
+
+26. POKAZIVACI NA FUNKCIJE
+    Korištenje pokazivača na funkcije - proslijeđivanje funkcije kao parametra
+
+    Primjer koda:
+
+// Datoteka: ui.c
+
+// POKAZIVAC NA FUNKCIJU - Comparator
+static int compare_pacijenti_po_riziku(const void *a, const void *b) {
+    const Pacijent *p1 = (const Pacijent *)a;
+    const Pacijent *p2 = (const Pacijent *)b;
+    
+    if (p1->rizik_postotak < p2->rizik_postotak) return 1;
+    if (p1->rizik_postotak > p2->rizik_postotak) return -1;
+    return 0;
+}
+
+// QSORT - Koristi pokazivač na compare funkciju
+void sortiraj_pacijente_po_riziku(void) {
+    qsort(lista_pacijenata.pacijenti,      // Niz
+          lista_pacijenata.count,            // Broj elemenata
+          sizeof(Pacijent),                  // Veličina elementa
+          compare_pacijenti_po_riziku);      // Pokazivač na FUNKCIJU!
+          //^^^^^^^^^^^^^^^^^^^^^^
+          // Proslijeđuje se kao pokazivač na funkciju
+}
+
+// ALTERNATIVA - Eksplicitni pokazivač na funkciju (za edukaciju)
+typedef int (*Comparator)(const void*, const void*);
+
+void sortiraj_sa_pokazivacем(Comparator comp) {
+    qsort(lista_pacijenata.pacijenti,
+          lista_pacijenata.count,
+          sizeof(Pacijent),
+          comp);  // Koristi prosljeđeni pokazivač na funkciju
+}
+
+// Korištenje:
+// sortiraj_sa_pokazivacем(compare_pacijenti_po_riziku);
+
+DOPUNSKI KONCEPTI:
+
+DVOSTRUKO POVEZANA LISTA
+
+Primjer koda:
+
+// Datoteka: pacijent.h
+
+// CVOR - Sadrži podatke i pokazivače na prije i nakon
+typedef struct Node {
+    Pacijent data;
+    struct Node *next;  // Pokazivač na sljedeći čvor
+    struct Node *prev;  // Pokazivač na prethodni čvor
+} Node;
+
+// LISTA - Sadrži head, tail i brojač
+typedef struct {
+    Node *head;  // Pokazivač na prvi čvor
+    Node *tail;  // Pokazivač na zadnji čvor
+    int count;   // Broj čvorova
+} DvostrukaPovezanaLista;
+
+// Datoteka: lista.c
+
+// DODAJ U POVEZANU LISTU
+int dodaj_u_povezanu_listu(DvostrukaPovezanaLista *lista, const Pacijent *pacijent) {
+    Node *novi_cvor = (Node *)malloc(sizeof(Node));
+    
+    novi_cvor->data = *pacijent;
+    novi_cvor->next = NULL;
+    novi_cvor->prev = lista->tail;  // Povezivanje sa prethodnim
+    
+    if (lista->tail != NULL) {
+        lista->tail->next = novi_cvor;  // Povezivanje sa sljedečim
+    }
+    lista->tail = novi_cvor;
+    
+    if (lista->head == NULL) {
+        lista->head = novi_cvor;
+    }
+    
+    lista->count++;
+    return 1;
+}
+
+// Datoteka: main.c
+case 8:
+    prikazi_povezanu_listu(&dvostuka_lista);  // Prikaz dvostruke liste
+    break;
+
