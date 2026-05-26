@@ -2,8 +2,6 @@
 #pragma warning(disable : 6031)
 #include "pacijent.h"
 
-// --- MODULI --- 
-
 void procjena_melanoma(void) {
     Pacijent p; 
     int b = 0;
@@ -98,7 +96,6 @@ void procjena_prostate(void) {
     }
 }
 
-// --- UPDATE ---
 void azuriraj_rizik_pacijenta(const char* prezime) {
     if (prezime == NULL) return; 
 
@@ -113,10 +110,8 @@ void azuriraj_rizik_pacijenta(const char* prezime) {
     printf("[!] Nema pacijenta s tim prezimenom.\n");
 }
 
-// --- DELETE --- 
 void obrisi_pacijenta(const char* prezime) {
-    if (prezime == NULL) return; 
-
+    if (prezime == NULL) return;
     for (int i = 0; i < lista_pacijenata.count; i++) {
         if (strcmp(lista_pacijenata.pacijenti[i].prezime, prezime) == 0) {
             for (int j = i; j < lista_pacijenata.count - 1; j++) {
@@ -125,6 +120,7 @@ void obrisi_pacijenta(const char* prezime) {
             lista_pacijenata.count--;
             obrisi_iz_povezane_liste(&dvostuka_lista, prezime);
             printf("[+] Pacijent obrisan!\n");
+            azuriraj_tekstualnu_datoteku();
             return;
         }
     }

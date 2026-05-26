@@ -10,7 +10,6 @@ int main(void) {
     int izbor;
     char pre[50]; 
 
-    // --- INICIJALIZACIJA --- 
     if (!inicijalizuj_listu(&lista_pacijenata)) { 
         fprintf(stderr, "[!] Inicijalizacija liste neuspjesna!\n");
         return EXIT_FAILURE;
@@ -21,7 +20,6 @@ int main(void) {
         return EXIT_FAILURE;
     }
 
-    // --- UČITAVANJE IZ DATOTEKE BINARNE I TEKSTUALNE --- 
     printf("Učitavanje podataka...\n");
     ucitaj_pacijente_iz_datoteke_binarno(&lista_pacijenata);
     if (lista_pacijenata.count == 0) {
@@ -29,7 +27,6 @@ int main(void) {
     }
     printf("Sustav je spreman!\n\n");
 
-    // --- MAIN LOOP --- 
     do {
         ocisti_ekran();
         prikazi_meni();

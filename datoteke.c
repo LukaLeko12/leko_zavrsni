@@ -1,7 +1,6 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #include "pacijent.h"
 
-// --- SPREMI U DATOTEKU - TEKSTUALNO --- 
 void spremi_u_datoteku_tekstualno(const Pacijent* p) {
     if (p == NULL) return;
 
@@ -24,7 +23,6 @@ void spremi_u_datoteku_tekstualno(const Pacijent* p) {
     fclose(fp); 
 }
 
-// --- ČITAJ PACIJENTE IZ DATOTEKE - TEKSTUALNO --- 
 int ucitaj_pacijente_iz_datoteke_tekstualno(PacijentList* lista) {
     if (lista == NULL) return 0; // (14)
 
@@ -63,7 +61,6 @@ int ucitaj_pacijente_iz_datoteke_tekstualno(PacijentList* lista) {
     return 1;
 }
 
-// --- SPREMI U DATOTEKU - BINARNO --- 
 void spremi_u_datoteku_binarno(const Pacijent* p) {
     if (p == NULL) return; 
 
@@ -82,7 +79,6 @@ void spremi_u_datoteku_binarno(const Pacijent* p) {
     fclose(fp); 
 }
 
-// --- ČITAJ PACIJENTE IZ DATOTEKE - BINARNO --- 
 int ucitaj_pacijente_iz_datoteke_binarno(PacijentList* lista) {
     if (lista == NULL) return 0; 
 
@@ -111,7 +107,6 @@ int ucitaj_pacijente_iz_datoteke_binarno(PacijentList* lista) {
     return 1;
 }
 
-// --- BRISANJE DATOTEKE ---
 int obrisi_datoteku(void) {
     if (remove(FILE_BINARNI) == 0) { 
         printf("[+] Binarna datoteka obrisana!\n");
@@ -124,7 +119,6 @@ int obrisi_datoteku(void) {
     }
 }
 
-// --- PREIMMENUJ DATOTEKU --- 
 int preimenuj_datoteku(const char* stara, const char* nova) {
     if (stara == NULL || nova == NULL) return 0; 
 
@@ -139,7 +133,6 @@ int preimenuj_datoteku(const char* stara, const char* nova) {
     }
 }
 
-// --- KOPIRAJ DATOTEKU --- 
 int kopiraj_datoteku(const char* izvor, const char* odrediste) {
     if (izvor == NULL || odrediste == NULL) return 0; 
 
@@ -178,7 +171,6 @@ int kopiraj_datoteku(const char* izvor, const char* odrediste) {
     return 1;
 }
 
-// --- NAPRAVI BACKUP ---
 int napravi_backup(void) {
     if (kopiraj_datoteku(FILE_BINARNI, FILE_BACKUP)) {
         printf("[+] Backup napravljen!\n");
@@ -187,7 +179,6 @@ int napravi_backup(void) {
     return 0;
 }
 
-// --- IZVEZI CSV IZVJEŠTAJ --- 
 void izvezi_csv_izvjestaj(PacijentList* lista) {
     if (lista == NULL) return; 
 
@@ -198,10 +189,8 @@ void izvezi_csv_izvjestaj(PacijentList* lista) {
         return;
     }
 
-    // Zaglavlje
     fprintf(fp, "Ime,Prezime,Godine,Tip_Pregleda,Rizik_Postotak,Dijagnoza\n");
 
-    // Podaci
     for (int i = 0; i < lista->count; i++) {
         fprintf(fp, "%s,%s,%d,%s,%.2f,%s\n",
             lista->pacijenti[i].ime,
@@ -214,4 +203,23 @@ void izvezi_csv_izvjestaj(PacijentList* lista) {
 
     fclose(fp);
     printf("[+] CSV izvjestaj napravljen: %s\n", FILE_CSV);
+
+    void azuriraj_tekstualnu_datoteku(void) {
+        FILE* fp = fopen("kartoni.txt", "w"); 
+        if (!fp) {
+            printf("[!] Greska pri azuriranju tekstualne datoteke!\n");
+            return;
+        }
+        for (int i = 0; i < lista_pacijenata.count; i++) {
+            fprintf(fp, "%-12s %-12s %-4d %-15s %-7.2f%% %-30s\n",
+                lista_pacijenata.pacijenti[i].ime,
+                lista_pacijenata.pacijenti[i].prezime,
+                lista_pacijenata.pacijenti[i].godine,
+                lista_pacijenata.pacijenti[i].tip_pregleda,
+                lista_pacijenata.pacijenti[i].rizik_postotak,
+                lista_pacijenata.pacijenti[i].dijagnoza
+            );
+        }
+        fclose(fp);
+    }
 }

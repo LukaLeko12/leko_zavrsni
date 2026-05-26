@@ -1,7 +1,6 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #include "pacijent.h"
 
-// --- INICIJALIZACIJA LISTE ---
 int inicijalizuj_listu(PacijentList* lista) {
     if (lista == NULL) return 0; 
 
@@ -13,7 +12,6 @@ int inicijalizuj_listu(PacijentList* lista) {
     return 1;
 }
 
-// --- PROŠIRENJE LISTE --- 
 int prosliri_listu(PacijentList* lista) {
     if (lista == NULL) return 0; 
 
@@ -27,7 +25,6 @@ int prosliri_listu(PacijentList* lista) {
     return 1;
 }
 
-// --- DODAJ PACIJENTA U LISTU --- 
 int dodaj_pacijenta_u_listu(PacijentList* lista, const Pacijent* pacijent) {
     if (lista == NULL || pacijent == NULL) return 0;
 
@@ -41,7 +38,6 @@ int dodaj_pacijenta_u_listu(PacijentList* lista, const Pacijent* pacijent) {
     return 1;
 }
 
-// --- OSLOBAĐANJE MEMORIJE --- 
 void oslobodi_listu(PacijentList* lista) {
     if (lista == NULL) return; 
 
@@ -54,7 +50,6 @@ void oslobodi_listu(PacijentList* lista) {
     lista->capacity = 0;
 }
 
-// --- INICIJALIZACIJA POVEZANE LISTE ---
 int inicijalizuj_povezanu_listu(DvostrukaPovezanaLista* lista) {
     if (lista == NULL) return 0; 
     lista->head = NULL;
@@ -63,7 +58,6 @@ int inicijalizuj_povezanu_listu(DvostrukaPovezanaLista* lista) {
     return 1;
 }
 
-// --- DODAJ U POVEZANU LISTU --- 
 int dodaj_u_povezanu_listu(DvostrukaPovezanaLista* lista, const Pacijent* pacijent) {
     if (lista == NULL || pacijent == NULL) return 0; 
 
@@ -87,7 +81,6 @@ int dodaj_u_povezanu_listu(DvostrukaPovezanaLista* lista, const Pacijent* pacije
     return 1;
 }
 
-// --- PRETRAGA U POVEZANOJ LISTI ---
 Node* pretraga_u_povezanoj_listi(DvostrukaPovezanaLista* lista, const char* prezime) {
     if (lista == NULL || prezime == NULL) return NULL;
 
@@ -101,7 +94,6 @@ Node* pretraga_u_povezanoj_listi(DvostrukaPovezanaLista* lista, const char* prez
     return NULL; 
 }
 
-// --- BRISANJE IZ POVEZANE LISTE --- 
 int obrisi_iz_povezane_liste(DvostrukaPovezanaLista* lista, const char* prezime) {
     if (lista == NULL || prezime == NULL) return 0;
 
@@ -129,7 +121,6 @@ int obrisi_iz_povezane_liste(DvostrukaPovezanaLista* lista, const char* prezime)
     return 1;
 }
 
-// --- PRIKAZI POVEZANU LISTU --- 
 void prikazi_povezanu_listu(const DvostrukaPovezanaLista* lista) {
     if (lista == NULL || lista->head == NULL) {
         printf(" Povezana lista je prazna.\n");
@@ -154,7 +145,6 @@ void prikazi_povezanu_listu(const DvostrukaPovezanaLista* lista) {
     }
 }
 
-// --- OSLOBOĐENJE POVEZANE LISTE --- 
 void oslobodi_povezanu_listu(DvostrukaPovezanaLista* lista) {
     if (lista == NULL) return; 
 

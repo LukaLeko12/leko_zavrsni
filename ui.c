@@ -2,7 +2,6 @@
 #pragma warning(disable : 6031)
 #include "pacijent.h"
 
-// --- ČISTI EKRAN --- 
 void ocisti_ekran(void) {
 #ifdef _WIN32
     system("cls");
@@ -11,7 +10,6 @@ void ocisti_ekran(void) {
 #endif
 }
 
-// --- UNOS BROJA --- 
 int unos_broja(const char* pitanje) {
     if (pitanje == NULL) return 0; 
     int broj;
@@ -24,7 +22,6 @@ int unos_broja(const char* pitanje) {
     return broj;
 }
 
-// --- UNOS DA/NE --- 
 char unos_dn(const char* pitanje) {
     if (pitanje == NULL) return 'n'; 
     char izbor;
@@ -34,7 +31,6 @@ char unos_dn(const char* pitanje) {
     return izbor;
 }
 
-// --- UNOS BROJA S DECIMALNOM --- 
 float unos_float(const char* pitanje) {
     if (pitanje == NULL) return 0.0f; 
     float broj;
@@ -47,7 +43,6 @@ float unos_float(const char* pitanje) {
     return broj;
 }
 
-// --- UNOS STRINGA --- 
 void unos_string(char* buffer, int max_size, const char* prompt) {
     if (buffer == NULL || max_size <= 0) return; 
     printf("%s", prompt);
@@ -59,7 +54,6 @@ void unos_string(char* buffer, int max_size, const char* prompt) {
     }
 }
 
-// --- PRIKAZI SVE PACIJENTE --- 
 void prikazi_pacijente_funkcija(void) {
     ocisti_ekran();
     printf("---- PRIKAZ SVIH PACIJENATA ----\n");
@@ -86,7 +80,6 @@ void prikazi_pacijente_funkcija(void) {
     printf("Ukupno: %d pacijenata\n", lista_pacijenata.count);
 }
 
-// --- STATISTIKA --- 
 void prikazi_statistiku(void) {
     if (lista_pacijenata.count == 0) {
         printf(" [!] Nema podataka za statistiku!\n");
@@ -118,10 +111,9 @@ void prikazi_statistiku(void) {
     printf("  Nizak rizik (<40%%):     %d pacijenata (%.1f%%)\n",
         lista_pacijenata.count - visok_rizik - srednji_rizik,
         (float)(lista_pacijenata.count - visok_rizik - srednji_rizik) / lista_pacijenata.count * 100);
-    printf("\nProsjekurni rizik: %.2f%%\n", prosjecan_rizik / lista_pacijenata.count);
+    printf("\nProsjecni rizik: %.2f%%\n", prosjecan_rizik / lista_pacijenata.count);
 }
 
-// --- PRETRAGA PO RIZIKU ---
 void pretraga_rizik(void) {
     ocisti_ekran();
     int min_rizik = unos_broja("Unesite minimalni rizik (%): ");
@@ -158,7 +150,6 @@ void pretraga_rizik(void) {
     }
 }
 
-// --- PRETRAGA PO PREZIMENU --- 
 void pretraga_prezime(void) {
     ocisti_ekran();
     char pre[50]; 
@@ -180,7 +171,6 @@ void pretraga_prezime(void) {
     }
 }
 
-// --- KOMPARATOR ZA SORTIRANJE ---
 static int compare_pacijenti_po_riziku(const void* a, const void* b) {
     const Pacijent* p1 = (const Pacijent*)a; 
     const Pacijent* p2 = (const Pacijent*)b;
@@ -190,7 +180,6 @@ static int compare_pacijenti_po_riziku(const void* a, const void* b) {
     return 0;
 }
 
-// --- SORTIRANJE PO RIZIKU --- 
 void sortiraj_pacijente_po_riziku(void) {
     ocisti_ekran();
     printf("---- SORTIRANJE PO RIZIKU ----\n");
@@ -221,7 +210,6 @@ void sortiraj_pacijente_po_riziku(void) {
     }
 }
 
-// --- UNOS I PRIKAZ DNEVNIKA BORAVKA --- 
 void unos_i_prikaz_dnevnika_boravka(void) {
     ocisti_ekran();
     int broj_dana = unos_broja("Koliko je pacijent proveo dana u bolnici? "); 
@@ -243,7 +231,7 @@ void unos_i_prikaz_dnevnika_boravka(void) {
         dnevnik[i].dan = i + 1; 
 
         unos_string(dnevnik[i].osjecaj, sizeof(dnevnik[i].osjecaj),
-            "Kako se osjećate? (Lose/Prihvatljivo/Dobro/Odlicno): ");
+            "Kako se osjecate? (Lose/Prihvatljivo/Dobro/Odlicno): ");
 
         dnevnik[i].temperatura = unos_float("Temperatura (°C): "); 
 
@@ -290,7 +278,6 @@ void unos_i_prikaz_dnevnika_boravka(void) {
     getchar();
 }
 
-// --- ALARM ZA RIZIK --- 
 void provjeri_alarm_rizik(void) {
     ocisti_ekran();
     printf("---- PROVJERA ALARMA ----\n\n");
@@ -308,7 +295,7 @@ void provjeri_alarm_rizik(void) {
 
     for (int i = 0; i < lista_pacijenata.count; i++) {
         if (lista_pacijenata.pacijenti[i].rizik_postotak >= 75) {
-            printf("%-12s %-12s %-4d %-15s %-7.2f%% %-30s ⚠️  ALARM!\n",
+            printf("%-12s %-12s %-4d %-15s %-7.2f%% %-30s ALARM!\n",
                 lista_pacijenata.pacijenti[i].ime,
                 lista_pacijenata.pacijenti[i].prezime,
                 lista_pacijenata.pacijenti[i].godine,
@@ -323,7 +310,6 @@ void provjeri_alarm_rizik(void) {
     printf("Preporucuje se HITNA INTERVENCIJA!\n");
 }
 
-// --- MENI --- 
 void prikazi_meni(void) {
     printf("---------------------------------------------------\n");
     printf("     SUSTAV ZA PROCJENU ONKOLOSKIH BOLESTI\n");
@@ -336,12 +322,12 @@ void prikazi_meni(void) {
         " [6]  Sortiraj po riziku\n"
         " [7]  Pretraga po riziku\n"
         " [8]  Prikazi povezanu listu\n"
-        " [9]  Ažuriraj rizik pacijenta\n"
-        " [10] Obriši pacijenta\n"
+        " [9]  Azuriraj rizik pacijenta\n"
+        " [10] Obrisi pacijenta\n"
         " [11] Pretraga po prezimenu\n"
         " [12] Dnevnik boravka pacijenta\n"
-        " [13] Izvezi CSV izvještaj\n"
-        " [14] Provjeri alarm (visok rizik)\n"
+        " [13] Izvezi CSV izvjestaj\n"
+        " [14] Provjeri alarm\n"
         " [15] Napravi backup\n"
         " [0]  Izlaz iz sustava\n");
     printf("---------------------------------------------------\n");
