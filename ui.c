@@ -1,9 +1,8 @@
-// ui.c -- KORISTNIČKI INTERFEJS
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #pragma warning(disable : 6031)
 #include "pacijent.h"
 
-// --- ČISTI EKRAN --- (7: organizacija)
+// --- ČISTI EKRAN --- 
 void ocisti_ekran(void) {
 #ifdef _WIN32
     system("cls");
@@ -12,9 +11,9 @@ void ocisti_ekran(void) {
 #endif
 }
 
-// --- UNOS BROJA --- (12,14: pokazivači, zaštita)
+// --- UNOS BROJA --- 
 int unos_broja(const char* pitanje) {
-    if (pitanje == NULL) return 0; // (14: zaštita)
+    if (pitanje == NULL) return 0; 
     int broj;
     printf("%s", pitanje);
     if (scanf("%d", &broj) != 1) {
@@ -25,9 +24,9 @@ int unos_broja(const char* pitanje) {
     return broj;
 }
 
-// --- UNOS DA/NE --- (12,14)
+// --- UNOS DA/NE --- 
 char unos_dn(const char* pitanje) {
-    if (pitanje == NULL) return 'n'; // (14: zaštita)
+    if (pitanje == NULL) return 'n'; 
     char izbor;
     printf("%s", pitanje);
     scanf(" %c", &izbor);
@@ -35,9 +34,9 @@ char unos_dn(const char* pitanje) {
     return izbor;
 }
 
-// --- UNOS BROJA S DECIMALNOM --- (2,3: float primitivni)
+// --- UNOS BROJA S DECIMALNOM --- 
 float unos_float(const char* pitanje) {
-    if (pitanje == NULL) return 0.0f; // (14: zaštita)
+    if (pitanje == NULL) return 0.0f; 
     float broj;
     printf("%s", pitanje);
     if (scanf("%f", &broj) != 1) {
@@ -48,9 +47,9 @@ float unos_float(const char* pitanje) {
     return broj;
 }
 
-// --- UNOS STRINGA --- (12,14: pokazivač, zaštita)
+// --- UNOS STRINGA --- 
 void unos_string(char* buffer, int max_size, const char* prompt) {
-    if (buffer == NULL || max_size <= 0) return; // (14: zaštita)
+    if (buffer == NULL || max_size <= 0) return; 
     printf("%s", prompt);
     if (fgets(buffer, max_size, stdin) != NULL) {
         size_t len = strlen(buffer);
@@ -60,7 +59,7 @@ void unos_string(char* buffer, int max_size, const char* prompt) {
     }
 }
 
-// --- PRIKAZI SVE PACIJENTE --- (1: READ)
+// --- PRIKAZI SVE PACIJENTE --- 
 void prikazi_pacijente_funkcija(void) {
     ocisti_ekran();
     printf("---- PRIKAZ SVIH PACIJENATA ----\n");
@@ -87,7 +86,7 @@ void prikazi_pacijente_funkcija(void) {
     printf("Ukupno: %d pacijenata\n", lista_pacijenata.count);
 }
 
-// --- STATISTIKA --- (1: READ)
+// --- STATISTIKA --- 
 void prikazi_statistiku(void) {
     if (lista_pacijenata.count == 0) {
         printf(" [!] Nema podataka za statistiku!\n");
@@ -122,7 +121,7 @@ void prikazi_statistiku(void) {
     printf("\nProsjekurni rizik: %.2f%%\n", prosjecan_rizik / lista_pacijenata.count);
 }
 
-// --- PRETRAGA PO RIZIKU --- (1: READ, 24: pretraživanje)
+// --- PRETRAGA PO RIZIKU ---
 void pretraga_rizik(void) {
     ocisti_ekran();
     int min_rizik = unos_broja("Unesite minimalni rizik (%): ");
@@ -159,13 +158,13 @@ void pretraga_rizik(void) {
     }
 }
 
-// --- PRETRAGA PO PREZIMENU --- (24: pretraživanje)
+// --- PRETRAGA PO PREZIMENU --- 
 void pretraga_prezime(void) {
     ocisti_ekran();
-    char pre[50]; // (15: statički alocirana polja)
+    char pre[50]; 
     unos_string(pre, sizeof(pre), "Unesite prezime: ");
 
-    Node* pronaden = pretraga_u_povezanoj_listi(&dvostuka_lista, pre); // (24: pretraživanje u povezanoj listi)
+    Node* pronaden = pretraga_u_povezanoj_listi(&dvostuka_lista, pre);
     if (pronaden != NULL) {
         printf("\n[+] Pronađen pacijent:\n");
         printf("%-12s %-12s %-4d %-15s %-7.2f%% %-30s\n",
@@ -181,32 +180,32 @@ void pretraga_prezime(void) {
     }
 }
 
-// --- KOMPARATOR ZA SORTIRANJE --- (23,26: qsort, pokazivač na funkciju)
+// --- KOMPARATOR ZA SORTIRANJE ---
 static int compare_pacijenti_po_riziku(const void* a, const void* b) {
-    const Pacijent* p1 = (const Pacijent*)a; // (12: pokazivač)
+    const Pacijent* p1 = (const Pacijent*)a; 
     const Pacijent* p2 = (const Pacijent*)b;
 
-    if (p1->rizik_postotak < p2->rizik_postotak) return 1; // Silazno sortiranje
+    if (p1->rizik_postotak < p2->rizik_postotak) return 1;
     if (p1->rizik_postotak > p2->rizik_postotak) return -1;
     return 0;
 }
 
-// --- SORTIRANJE PO RIZIKU --- (23,26: qsort, pokazivač na funkciju)
+// --- SORTIRANJE PO RIZIKU --- 
 void sortiraj_pacijente_po_riziku(void) {
     ocisti_ekran();
-    printf("---- SORTIRANJE PO RIZIKU (qsort) ----\n");
+    printf("---- SORTIRANJE PO RIZIKU ----\n");
 
     if (lista_pacijenata.count == 0) {
         printf("Nema pacijenata za sortiranje!\n");
         return;
     }
 
-    qsort(lista_pacijenata.pacijenti, // (23,26: qsort + pokazivač na funkciju comparator)
+    qsort(lista_pacijenata.pacijenti,
         lista_pacijenata.count,
         sizeof(Pacijent),
         compare_pacijenti_po_riziku);
 
-    printf("[+] Sortirano (od najveceg do najmanjeg rizika)!\n");
+    printf("[+] Sortirano od najveceg do najmanjeg rizika!\n");
     printf("%-12s %-12s %-4s %-15s %-8s %-30s\n",
         "IME", "PREZIME", "GOD", "TIP", "RIZIK", "DIJAGNOZA");
     printf("---------------------------------------------------------------\n");
@@ -222,18 +221,18 @@ void sortiraj_pacijente_po_riziku(void) {
     }
 }
 
-// --- UNOS I PRIKAZ DNEVNIKA BORAVKA --- (16,17,18: dinamička memorija)
+// --- UNOS I PRIKAZ DNEVNIKA BORAVKA --- 
 void unos_i_prikaz_dnevnika_boravka(void) {
     ocisti_ekran();
-    int broj_dana = unos_broja("Koliko je pacijent proveo dana u bolnici? "); // (2: int)
+    int broj_dana = unos_broja("Koliko je pacijent proveo dana u bolnici? "); 
 
     if (broj_dana <= 0) {
         printf("[!] Broj dana mora biti pozitivan!\n");
         return;
     }
 
-    DnevnikBoravka* dnevnik = (DnevnikBoravka*)malloc(broj_dana * sizeof(DnevnikBoravka)); // (16,17: malloc)
-    if (dnevnik == NULL) { // (18: provjera)
+    DnevnikBoravka* dnevnik = (DnevnikBoravka*)malloc(broj_dana * sizeof(DnevnikBoravka)); 
+    if (dnevnik == NULL) {
         printf("[!] Greska pri alokaciji memorije!\n");
         perror("malloc");
         return;
@@ -241,12 +240,12 @@ void unos_i_prikaz_dnevnika_boravka(void) {
 
     for (int i = 0; i < broj_dana; i++) {
         printf("\n---- DAN %d ----\n", i + 1);
-        dnevnik[i].dan = i + 1; // (2: int)
+        dnevnik[i].dan = i + 1; 
 
         unos_string(dnevnik[i].osjecaj, sizeof(dnevnik[i].osjecaj),
             "Kako se osjećate? (Lose/Prihvatljivo/Dobro/Odlicno): ");
 
-        dnevnik[i].temperatura = unos_float("Temperatura (°C): "); // (2,3: float)
+        dnevnik[i].temperatura = unos_float("Temperatura (°C): "); 
 
         unos_string(dnevnik[i].napomena, sizeof(dnevnik[i].napomena),
             "Dodatne napomene: ");
@@ -265,8 +264,8 @@ void unos_i_prikaz_dnevnika_boravka(void) {
             dnevnik[i].napomena);
     }
 
-    float prosj_temp = 0.0f; // (3: float)
-    int dobri_dani = 0; // (2: int)
+    float prosj_temp = 0.0f; 
+    int dobri_dani = 0; 
 
     for (int i = 0; i < broj_dana; i++) {
         prosj_temp += dnevnik[i].temperatura;
@@ -277,24 +276,24 @@ void unos_i_prikaz_dnevnika_boravka(void) {
         }
     }
 
-    printf("\n=== STATISTIKA BORAVKA ===\n");
+    printf("\n---- STATISTIKA BORAVKA ----\n");
     printf("Broj dana: %d\n", broj_dana);
     printf("Prosjecna temperatura: %.1f °C\n", prosj_temp / broj_dana);
     printf("Dobrih dana: %d (%.1f%%)\n", dobri_dani, (float)dobri_dani / broj_dana * 100);
     printf("Losih dana: %d (%.1f%%)\n", broj_dana - dobri_dani,
         (float)(broj_dana - dobri_dani) / broj_dana * 100);
 
-    free(dnevnik); // (18: free)
-    dnevnik = NULL; // (18: anuliranje)
+    free(dnevnik); 
+    dnevnik = NULL; 
 
     printf("\nEnter za nastavak...");
     getchar();
 }
 
-// --- ALARM RIZIK --- (22: upravljanje greškama, notifikacije)
+// --- ALARM ZA RIZIK --- 
 void provjeri_alarm_rizik(void) {
     ocisti_ekran();
-    printf("---- PROVJERA ALARMA - VISOK RIZIK ----\n\n");
+    printf("---- PROVJERA ALARMA ----\n\n");
 
     if (lista_pacijenata.count == 0) {
         printf("Nema pacijenata!\n");
@@ -324,7 +323,7 @@ void provjeri_alarm_rizik(void) {
     printf("Preporucuje se HITNA INTERVENCIJA!\n");
 }
 
-// --- MENI --- (10,11: izbornik, enum, 5: imenovanje)
+// --- MENI --- 
 void prikazi_meni(void) {
     printf("---------------------------------------------------\n");
     printf("     SUSTAV ZA PROCJENU ONKOLOSKIH BOLESTI\n");

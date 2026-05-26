@@ -1,36 +1,35 @@
-// lista.c -- UPRAVLJANJE DINAMIČKOM LISTOM
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include "pacijent.h"
 
-// --- INICIJALIZACIJA LISTE --- (16,17: dinamička memorija, malloc)
+// --- INICIJALIZACIJA LISTE ---
 int inicijalizuj_listu(PacijentList* lista) {
-    if (lista == NULL) return 0; // (14: zaštita parametara)
+    if (lista == NULL) return 0; 
 
     lista->capacity = INITIAL_CAPACITY;
     lista->count = 0;
-    lista->pacijenti = (Pacijent*)malloc(lista->capacity * sizeof(Pacijent)); // (16,17: malloc)
-    PROVJERA_MEMORIJE(lista->pacijenti); // (9,18: makro, provjera)
+    lista->pacijenti = (Pacijent*)malloc(lista->capacity * sizeof(Pacijent)); 
+    PROVJERA_MEMORIJE(lista->pacijenti); 
 
     return 1;
 }
 
-// --- PROŠIRENJE LISTE --- (17: realloc - dinamičko proširenje)
+// --- PROŠIRENJE LISTE --- 
 int prosliri_listu(PacijentList* lista) {
-    if (lista == NULL) return 0; // (14)
+    if (lista == NULL) return 0; 
 
     int nova_kapaciteta = lista->capacity * 2;
     Pacijent* temp = (Pacijent*)realloc(lista->pacijenti,
-        nova_kapaciteta * sizeof(Pacijent)); // (17: realloc)
-    PROVJERA_MEMORIJE(temp); // (9,18)
+        nova_kapaciteta * sizeof(Pacijent)); 
+    PROVJERA_MEMORIJE(temp); 
     lista->pacijenti = temp;
     lista->capacity = nova_kapaciteta;
 
     return 1;
 }
 
-// --- DODAJ PACIJENTA U LISTU --- (1: INSERT - CREATE, 12: pokazivači)
+// --- DODAJ PACIJENTA U LISTU --- 
 int dodaj_pacijenta_u_listu(PacijentList* lista, const Pacijent* pacijent) {
-    if (lista == NULL || pacijent == NULL) return 0; // (14: zaštita)
+    if (lista == NULL || pacijent == NULL) return 0;
 
     if (lista->count >= lista->capacity) {
         if (!prosliri_listu(lista)) return 0;
@@ -42,36 +41,34 @@ int dodaj_pacijenta_u_listu(PacijentList* lista, const Pacijent* pacijent) {
     return 1;
 }
 
-// --- OSLOBAĐANJE MEMORIJE --- (18: sigurno brisanje, free, NULL)
+// --- OSLOBAĐANJE MEMORIJE --- 
 void oslobodi_listu(PacijentList* lista) {
-    if (lista == NULL) return; // (14)
+    if (lista == NULL) return; 
 
     if (lista->pacijenti != NULL) {
-        free(lista->pacijenti); // (17,18: free)
-        lista->pacijenti = NULL; // (18: anuliranje pokazivača)
+        free(lista->pacijenti); 
+        lista->pacijenti = NULL; 
     }
 
     lista->count = 0;
     lista->capacity = 0;
 }
 
-// === POVEZANA LISTA === (dopunski)
-
 // --- INICIJALIZACIJA POVEZANE LISTE ---
 int inicijalizuj_povezanu_listu(DvostrukaPovezanaLista* lista) {
-    if (lista == NULL) return 0; // (14)
+    if (lista == NULL) return 0; 
     lista->head = NULL;
     lista->tail = NULL;
     lista->count = 0;
     return 1;
 }
 
-// --- DODAJ U POVEZANU LISTU --- (dopunski, 12: pokazivači, 16,17: malloc)
+// --- DODAJ U POVEZANU LISTU --- 
 int dodaj_u_povezanu_listu(DvostrukaPovezanaLista* lista, const Pacijent* pacijent) {
-    if (lista == NULL || pacijent == NULL) return 0; // (14)
+    if (lista == NULL || pacijent == NULL) return 0; 
 
-    Node* novi_cvor = (Node*)malloc(sizeof(Node)); // (17: malloc)
-    PROVJERA_MEMORIJE(novi_cvor); // (9,18)
+    Node* novi_cvor = (Node*)malloc(sizeof(Node)); 
+    PROVJERA_MEMORIJE(novi_cvor); 
 
     novi_cvor->data = *pacijent;
     novi_cvor->next = NULL;
@@ -90,23 +87,23 @@ int dodaj_u_povezanu_listu(DvostrukaPovezanaLista* lista, const Pacijent* pacije
     return 1;
 }
 
-// --- PRETRAGA U POVEZANOJ LISTI --- (24: pretraživanje)
+// --- PRETRAGA U POVEZANOJ LISTI ---
 Node* pretraga_u_povezanoj_listi(DvostrukaPovezanaLista* lista, const char* prezime) {
-    if (lista == NULL || prezime == NULL) return NULL; // (14)
+    if (lista == NULL || prezime == NULL) return NULL;
 
     Node* trenutni = lista->head;
     while (trenutni != NULL) {
         if (strcmp(trenutni->data.prezime, prezime) == 0) {
-            return trenutni; // (24: pronašao)
+            return trenutni;
         }
         trenutni = trenutni->next;
     }
-    return NULL; // (24: nije pronašao)
+    return NULL; 
 }
 
-// --- BRISANJE IZ POVEZANE LISTE --- (1: DELETE, dopunski)
+// --- BRISANJE IZ POVEZANE LISTE --- 
 int obrisi_iz_povezane_liste(DvostrukaPovezanaLista* lista, const char* prezime) {
-    if (lista == NULL || prezime == NULL) return 0; // (14)
+    if (lista == NULL || prezime == NULL) return 0;
 
     Node* cvor = pretraga_u_povezanoj_listi(lista, prezime);
     if (cvor == NULL) return 0;
@@ -125,21 +122,21 @@ int obrisi_iz_povezane_liste(DvostrukaPovezanaLista* lista, const char* prezime)
         lista->tail = cvor->prev;
     }
 
-    free(cvor); // (18: free)
-    cvor = NULL; // (18: anuliranje)
+    free(cvor); 
+    cvor = NULL; 
     lista->count--;
 
     return 1;
 }
 
-// --- PRIKAZI POVEZANU LISTU --- (1: READ - dopunski)
+// --- PRIKAZI POVEZANU LISTU --- 
 void prikazi_povezanu_listu(const DvostrukaPovezanaLista* lista) {
     if (lista == NULL || lista->head == NULL) {
         printf(" Povezana lista je prazna.\n");
         return;
     }
 
-    printf("\n=== PRIKAZ DVOSTRUKE POVEZANE LISTE ===\n");
+    printf("\n---- PRIKAZ DVOSTRUKE POVEZANE LISTE ----\n");
     printf("%-12s %-12s %-4s %-15s %-8s %-30s\n",
         "IME", "PREZIME", "GOD", "TIP", "RIZIK", "DIJAGNOZA");
     printf("---------------------------------------------------------------\n");
@@ -157,19 +154,19 @@ void prikazi_povezanu_listu(const DvostrukaPovezanaLista* lista) {
     }
 }
 
-// --- OSLOBOĐENJE POVEZANE LISTE --- (18: sigurno brisanje, free, NULL)
+// --- OSLOBOĐENJE POVEZANE LISTE --- 
 void oslobodi_povezanu_listu(DvostrukaPovezanaLista* lista) {
-    if (lista == NULL) return; // (14)
+    if (lista == NULL) return; 
 
     Node* trenutni = lista->head;
     while (trenutni != NULL) {
         Node* temp = trenutni;
         trenutni = trenutni->next;
-        free(temp); // (18: free)
-        temp = NULL; // (18: anuliranje)
+        free(temp);
+        temp = NULL; 
     }
 
-    lista->head = NULL; // (18: anuliranje)
+    lista->head = NULL; 
     lista->tail = NULL;
     lista->count = 0;
 }

@@ -1,4 +1,4 @@
-#ifndef PACIJENT_H
+﻿#ifndef PACIJENT_H
 #define PACIJENT_H
 
 #include <stdio.h>
@@ -11,7 +11,7 @@
 #include <windows.h>
 #endif
 
-// --- KONSTANTE --- (2,5: primitivni tipovi, imenovanje)
+// --- KONSTANTE --- 
 #define MAX_STRING 100
 #define MAX_PATIENTS 1000
 #define INITIAL_CAPACITY 50
@@ -20,7 +20,7 @@
 #define FILE_CSV "izvjestaj.csv"
 #define FILE_BACKUP "backup.bin"
 
-// --- ENUM ZA IZBORNIK --- (4,11: enum za izbornik, typedef)
+// --- ENUM ZA IZBORNIK ---
 typedef enum {
     MELANOM = 1,
     PLUCA = 2,
@@ -38,56 +38,56 @@ typedef enum {
     ALARM_RIZIK = 14,
     BACKUP = 15,
     IZLAZ = 0
-} MenuOpcije; // (4,11: enum)
+} MenuOpcije; 
 
-// --- STRUKTURA ZA PACIJENTA --- (2,3,4,15: int, float, struct, typedef, statička polja)
+// --- STRUKTURA ZA PACIJENTA --- 
 typedef struct {
-    char ime[50];               // (15: statički alocirana polja, ne VLA)
-    char prezime[50];           // (5: snake_case)
-    int godine;                 // (2: primitivni int)
-    float rizik_postotak;       // (3: primitivni float)
+    char ime[50];              
+    char prezime[50];          
+    int godine;                
+    float rizik_postotak;       
     char tip_pregleda[30];
     char dijagnoza[100];
-    time_t datum_unosa;         // (3: time_t primitivni)
-} Pacijent; // (4: typedef struct)
+    time_t datum_unosa;         
+} Pacijent; 
 
-// --- DINAMIČKA LISTA PACIJENATA --- (12,13,16: pokazivači, strukture, dinamička memorija)
+// --- DINAMIČKA LISTA PACIJENATA --- 
 typedef struct {
-    Pacijent* pacijenti;        // (12: pokazivač na dinamičku memoriju)
+    Pacijent* pacijenti;       
     int count;
     int capacity;
-} PacijentList; // (4: typedef)
+} PacijentList; 
 
-// --- ČVOR ZA POVEZANU LISTU --- (dopunski: dvostruko povezana lista)
+// --- ČVOR ZA POVEZANU LISTU --- 
 typedef struct Node {
     Pacijent data;
-    struct Node* next;          // (12: pokazivač)
-    struct Node* prev;          // (12: pokazivač)
+    struct Node* next;         
+    struct Node* prev;         
 } Node; // (4: typedef)
 
-// --- DVOSTRUKO POVEZANA LISTA --- (dopunski)
+// --- DVOSTRUKO POVEZANA LISTA --- 
 typedef struct {
     Node* head;
     Node* tail;
     int count;
-} DvostrukaPovezanaLista; // (4: typedef)
+} DvostrukaPovezanaLista; 
 
-// --- STRUKTURA ZA DNEVNIK --- (3,4,13: složeni tip, typedef, struktura)
+// --- STRUKTURA ZA DNEVNIK --- 
 typedef struct {
-    int dan;                    // (2: int primitivni)
-    char osjecaj[100];          // (15: statički alocirana polja)
-    float temperatura;          // (3: float primitivni)
-    char napomena[200];         // (15: statički alocirana polja)
-} DnevnikBoravka; // (4: typedef)
+    int dan;                    
+    char osjecaj[100];         
+    float temperatura;          
+    char napomena[200];        
+} DnevnikBoravka; 
 
-// --- STRUKTURA ZA KORISNIKA --- (3,4: složeni tip, typedef)
+// --- STRUKTURA ZA KORISNIKA --- 
 typedef struct {
     char korisnicko_ime[50];
     char lozinka[50];
-    char tip[20];               // "doktor", "pacijent"
-} Korisnik; // (4: typedef)
+    char tip[20];              
+} Korisnik; 
 
-// --- MAKRO FUNKCIJE --- (9: makro funkcije za jednostavne operacije)
+// --- MAKRO FUNKCIJE --- 
 #define PROVJERA_MEMORIJE(ptr) \
     do { \
         if ((ptr) == NULL) { \
@@ -95,7 +95,7 @@ typedef struct {
             perror("malloc"); \
             exit(EXIT_FAILURE); \
         } \
-    } while(0) // (9,18,22: makro, provjera memorije, perror)
+    } while(0) 
 
 #define PROVJERA_DATOTEKE(fp) \
     do { \
@@ -103,25 +103,25 @@ typedef struct {
             fprintf(stderr, "[!] GRESKA: Datoteka ne moze biti otvorena!\n"); \
             perror("fopen"); \
         } \
-    } while(0) // (22: perror)
+    } while(0) 
 
 #define PROVJERA_NULL(ptr) \
     do { \
         if ((ptr) == NULL) return 0; \
-    } while(0) // (9,14: zaštita parametara)
+    } while(0) 
 
-// --- GLOBALNE VARIJABLE --- (6,8: static/extern - SAMO DEKLARACIJE!)
-extern PacijentList lista_pacijenata;           // (8: extern - samo deklaracija!)
-extern DvostrukaPovezanaLista dvostuka_lista;   // (8: extern - samo deklaracija!)
-extern Korisnik trenutni_korisnik;              // (8: extern - korisnik)
+// --- GLOBALNE VARIJABLE --- 
+extern PacijentList lista_pacijenata;           
+extern DvostrukaPovezanaLista dvostuka_lista;  
+extern Korisnik trenutni_korisnik;              
 
-// --- FUNKCIJE ZA UPRAVLJANJE LISTOM (lista.c) --- (13: strukture i funkcije)
+// --- FUNKCIJE ZA UPRAVLJANJE LISTOM - lista.c
 int inicijalizuj_listu(PacijentList* lista);
 int prosliri_listu(PacijentList* lista);
 int dodaj_pacijenta_u_listu(PacijentList* lista, const Pacijent* pacijent);
 void oslobodi_listu(PacijentList* lista);
 
-// --- FUNKCIJE ZA POVEZANU LISTU --- (dopunski: dvostruko povezana lista)
+// --- FUNKCIJE ZA POVEZANU LISTU ---  
 int inicijalizuj_povezanu_listu(DvostrukaPovezanaLista* lista);
 int dodaj_u_povezanu_listu(DvostrukaPovezanaLista* lista, const Pacijent* pacijent);
 void prikazi_povezanu_listu(const DvostrukaPovezanaLista* lista);
@@ -129,7 +129,7 @@ void oslobodi_povezanu_listu(DvostrukaPovezanaLista* lista);
 int obrisi_iz_povezane_liste(DvostrukaPovezanaLista* lista, const char* prezime);
 Node* pretraga_u_povezanoj_listi(DvostrukaPovezanaLista* lista, const char* prezime);
 
-// --- FUNKCIJE ZA DATOTEKE (datoteke.c) --- (1,19: CRUD, datoteke)
+// --- FUNKCIJE ZA DATOTEKE - datoteke.c
 void spremi_u_datoteku_tekstualno(const Pacijent* p);
 int ucitaj_pacijente_iz_datoteke_tekstualno(PacijentList* lista);
 void spremi_u_datoteku_binarno(const Pacijent* p);
@@ -139,42 +139,42 @@ int preimenuj_datoteku(const char* stara, const char* nova);
 int kopiraj_datoteku(const char* izvor, const char* odrediste);
 int napravi_backup(void);
 
-// --- FUNKCIJE ZA CSV IZVJEŠTAJ --- (21: kopiraj, export)
+// --- FUNKCIJE ZA CSV IZVJEŠTAJ --- 
 void izvezi_csv_izvjestaj(PacijentList* lista);
 
-// --- POMOĆNE FUNKCIJE (ui.c) --- (12,14: pokazivači, zaštita)
+// --- POMOĆNE FUNKCIJE - ui.c --- 
 void ocisti_ekran(void);
 int unos_broja(const char* pitanje);
 char unos_dn(const char* pitanje);
 float unos_float(const char* pitanje);
 void unos_string(char* buffer, int max_size, const char* prompt);
 
-// --- MODULI PREGLEDA (pacijent.c) --- (13: funkcije i strukture)
+// --- MODULI PREGLEDA - pacijent.c --- 
 void procjena_melanoma(void);
 void procjena_pluca(void);
 void procjena_prostate(void);
 
-// --- PRIKAZI PODATKE (ui.c) --- (1: READ operacija)
+// --- PRIKAZI PODATKE - ui.c --- 
 void prikazi_pacijente_funkcija(void);
 void prikazi_statistiku(void);
 void prikazi_meni(void);
 
-// --- SORTIRANJE I PRETRAŽIVANJE --- (23,26: qsort, pokazivač na funkciju)
+// --- SORTIRANJE I PRETRAŽIVANJE --- 
 void sortiraj_pacijente_po_riziku(void);
 void pretraga_rizik(void);
 void pretraga_prezime(void);
 
-// --- UPDATE/DELETE --- (1: UPDATE, DELETE iz CRUID)
+// --- UPDATE/DELETE ---
 void azuriraj_rizik_pacijenta(const char* prezime);
 void obrisi_pacijenta(const char* prezime);
 
-// --- DNEVNIK BORAVKA --- (16,17,18: dinamička memorija)
+// --- DNEVNIK BORAVKA ---
 void unos_i_prikaz_dnevnika_boravka(void);
 
-// --- ALARM RIZIK --- (22: upravljanje greškama, notifikacije)
+// --- ALARM RIZIK ---
 void provjeri_alarm_rizik(void);
 
-// --- AUTENTIFIKACIJA --- (9: makro/inline logika)
+// --- AUTENTIFIKACIJA ---
 int login_korisnik(void);
 
 #endif
